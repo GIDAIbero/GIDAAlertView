@@ -26,14 +26,9 @@
     
     [self.window makeKeyAndVisible];
     
-    GIDAAlertView *theAlertView;
-    
-    //Depending on the initialization type, the behavior will be different
-    theAlertView=[[GIDAAlertView alloc] initWithMessage:@"GIDAAlertView Demo" andAlertImage:[UIImage imageNamed:@"noresource.png"]];
-    //theAlertView=[[GIDAAlertView alloc] initAlertWithSpinnerAndMessage:@"GIDAAlertView Loading ..."];
-
-    [[[UIApplication sharedApplication] keyWindow]  addSubview:theAlertView];
-    [theAlertView presentAlertFor:4.0];
+    TestViewController *viewController=[[TestViewController alloc] initWithNibName:@"Test" bundle:nil];
+    [[self window] setRootViewController:viewController];
+    [viewController release];
     
     return YES;
 }

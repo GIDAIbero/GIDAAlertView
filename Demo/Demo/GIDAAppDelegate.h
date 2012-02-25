@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "GIDAAlertView.h"
+#import "TestViewController.h"
 
 @interface GIDAAppDelegate : UIResponder <UIApplicationDelegate>
 

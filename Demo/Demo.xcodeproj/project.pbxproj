@@ -18,6 +18,8 @@
 		DD2C7C1414EA214E00F7752C /* GIDAAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2C7C1114EA214E00F7752C /* GIDAAlertView.m */; };
 		DD2C7C1C14EA228300F7752C /* noresource.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2C7C1A14EA228300F7752C /* noresource.png */; };
 		DD2C7C1D14EA228300F7752C /* noresource@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2C7C1B14EA228300F7752C /* noresource@2x.png */; };
+		DDFF3D0B14EDFB9F0082BDC4 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DDFF3D0A14EDFB9F0082BDC4 /* TestViewController.m */; };
+		DDFF3D0E14EDFC300082BDC4 /* Test.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDFF3D0D14EDFC300082BDC4 /* Test.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +39,9 @@
 		DD2C7C1114EA214E00F7752C /* GIDAAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GIDAAlertView.m; sourceTree = "<group>"; };
 		DD2C7C1A14EA228300F7752C /* noresource.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = noresource.png; sourceTree = "<group>"; };
 		DD2C7C1B14EA228300F7752C /* noresource@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "noresource@2x.png"; sourceTree = "<group>"; };
+		DDFF3D0914EDFB9F0082BDC4 /* TestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
+		DDFF3D0A14EDFB9F0082BDC4 /* TestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
+		DDFF3D0D14EDFC300082BDC4 /* Test.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Test.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,10 +92,9 @@
 				DD2C7C0314EA212A00F7752C /* GIDAAppDelegate.m */,
 				DD2C7C1014EA214E00F7752C /* GIDAAlertView.h */,
 				DD2C7C1114EA214E00F7752C /* GIDAAlertView.m */,
-				DD2C7C0E14EA214E00F7752C /* alertBackground.png */,
-				DD2C7C0F14EA214E00F7752C /* alertBackground@2x.png */,
-				DD2C7C1A14EA228300F7752C /* noresource.png */,
-				DD2C7C1B14EA228300F7752C /* noresource@2x.png */,
+				DDFF3D0914EDFB9F0082BDC4 /* TestViewController.h */,
+				DDFF3D0A14EDFB9F0082BDC4 /* TestViewController.m */,
+				DDFF3D1314EE03360082BDC4 /* Resources */,
 				DD2C7BFA14EA212A00F7752C /* Supporting Files */,
 			);
 			path = Demo;
@@ -105,6 +109,18 @@
 				DD2C7C0114EA212A00F7752C /* Demo-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		DDFF3D1314EE03360082BDC4 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				DDFF3D0D14EDFC300082BDC4 /* Test.xib */,
+				DD2C7C0E14EA214E00F7752C /* alertBackground.png */,
+				DD2C7C0F14EA214E00F7752C /* alertBackground@2x.png */,
+				DD2C7C1A14EA228300F7752C /* noresource.png */,
+				DD2C7C1B14EA228300F7752C /* noresource@2x.png */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -163,6 +179,7 @@
 				DD2C7C1314EA214E00F7752C /* alertBackground@2x.png in Resources */,
 				DD2C7C1C14EA228300F7752C /* noresource.png in Resources */,
 				DD2C7C1D14EA228300F7752C /* noresource@2x.png in Resources */,
+				DDFF3D0E14EDFC300082BDC4 /* Test.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -176,6 +193,7 @@
 				DD2C7C0014EA212A00F7752C /* main.m in Sources */,
 				DD2C7C0414EA212A00F7752C /* GIDAAppDelegate.m in Sources */,
 				DD2C7C1414EA214E00F7752C /* GIDAAlertView.m in Sources */,
+				DDFF3D0B14EDFB9F0082BDC4 /* TestViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

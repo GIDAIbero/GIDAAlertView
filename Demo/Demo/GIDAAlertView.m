@@ -8,6 +8,29 @@
 
 #import "GIDAAlertView.h"
 
+//Private methods of the class
+@interface GIDAAlertView (private)
+
+-(void)enterLimbo:(id)sender;
+-(void)leaveLimbo:(id)sender;
+
+@end
+
+@implementation GIDAAlertView (private)
+
+-(void)enterLimbo:(id)sender{
+    NSLog(@"Engering Limbo");
+    [NSThread sleepForTimeInterval:secondsVisible];
+    [self performSelectorOnMainThread:@selector(leaveLimbo:) withObject:nil waitUntilDone:YES];
+}
+
+-(void)leaveLimbo:(id)sender{
+    NSLog(@"Leaving Limbo");
+    [self setHidden:YES];
+}
+
+@end
+
 @implementation GIDAAlertView
 
 @synthesize secondsVisible;
@@ -16,6 +39,8 @@
 
 -(id)initWithMessage:(NSString *)someMessage andAlertImage:(UIImage *)someImage{
     if(self = [super initWithFrame:CGRectMake(70, 100, 180, 180)]){
+        //This allows the user to keep interaction with the screen
+        [self setClipsToBounds:YES];
         
         //Be able to see anything behind the view
         [self setBackgroundColor:[UIColor clearColor]];
@@ -39,10 +64,11 @@
         [theImageView setFrame:CGRectMake(50, 20, 80, 80)];
         [self addSubview:theImageView];
         
+        //Should start hidden from the <<eye>>
         [self setHidden:YES];
         
+        //Type custom has a seconds visible class
         type=GIDAAlertViewTypeCustom;
-        
         secondsVisible=0;
     }
     return self;
@@ -50,6 +76,8 @@
 
 -(id)initAlertWithSpinnerAndMessage:(NSString *)someMessage{
     if(self = [super initWithFrame:CGRectMake(0, 0, 320, 414)]){
+        //This allows the user to keep interaction with the screen
+        [self setClipsToBounds:YES];
         
         //Be able to see anything behind the view
         [self setBackgroundColor:[UIColor clearColor]];
@@ -75,8 +103,10 @@
         [theView addSubview:theSpinner];
         [theSpinner release];
         
-        [self setHidden:NO];
+        //It always start hidden from the <<eye>> 
+        [self setHidden:YES];
         
+        //Set the type
         type=GIDAAlertViewTypeLoading;
         
         secondsVisible=0;
@@ -95,28 +125,35 @@
 }
 
 -(void)presentAlertFor:(float)seconds{
-    [self setSecondsVisible:seconds];
-    [self setHidden:NO];
-    
-    //We are going to be waiting for a time interval, so in order to avoid blocking the main thread
-    //perform the waiting in another thread
-    [NSThread detachNewThreadSelector:@selector(enterLimbo:) toTarget:self withObject:nil];
+    if (type == GIDAAlertViewTypeCustom) {
+        [self setSecondsVisible:seconds];
+        [self setHidden:NO];
+                
+        //We are going to be waiting for a time interval, so in order to avoid blocking the main thread
+        //perform the waiting in another thread
+        [NSThread detachNewThreadSelector:@selector(enterLimbo:) toTarget:self withObject:nil];
+    }
+    else{
+        NSLog(@"GIDAAlertView**:Can't call presentAlertFor:(float)seconds on GIDAAlertViewTypeLoading");
+    }
 }
 
 -(void)presentAlertWithSpinner {
-    [self setHidden:NO];
+    if (type == GIDAAlertViewTypeLoading) {
+        [self setHidden:NO];
+    }
+    else{
+        NSLog(@"GIDAAlertView**:Can't call presentAlertWithSpinners on GIDAAlertViewTypeCustom");
+    }
 }
 
 -(void)hideAlertWithSpinner {
-    [self setHidden:YES];
-}
-
--(void)enterLimbo:(id)sender{
-    [NSThread sleepForTimeInterval:secondsVisible];
-    [self performSelectorOnMainThread:@selector(leaveLimbo:) withObject:nil waitUntilDone:YES];
-}
--(void)leaveLimbo:(id)sender{
-    [self setHidden:YES];
+    if (type == GIDAAlertViewTypeLoading) {
+        [self setHidden:YES];
+    }
+    else{
+        NSLog(@"GIDAAlertView**:Can't call hideAlertWithSpinner on GIDAAlertViewTypeCustom");
+    }
 }
 
 -(void)dealloc{
@@ -129,5 +166,4 @@
     
     [super dealloc];
 }
-
 @end

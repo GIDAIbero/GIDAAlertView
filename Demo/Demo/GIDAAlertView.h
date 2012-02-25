@@ -4,7 +4,7 @@
 //
 //  Created by Yoshiki Vázquez Baeza on 25/10/11.
 //  Copyright (c) 2011 Polar Bears Nanotechnology Research ©. All rights reserved.
-//
+//  To do: Is visible? Show Alert (in the top view without blocking interaction). Animate apparition (bounce).
 //
 #import <UIKit/UIKit.h>
 
@@ -36,19 +36,15 @@ typedef enum {
 //Generic constructor
 -(id)initWithMessage:(NSString *)someMessage andAlertImage:(UIImage *)someImage;
 
+//When a alert view has already been created and we want to modify it's contents use this method
+-(void)reloadWith:(NSString *)message andImage:(UIImage *)someImage;
+
 //The common alert known as the "Downloading ..." dialog is created with this method
 //you have to know when to hide it and to remove it from the superview
 -(id)initAlertWithSpinnerAndMessage:(NSString *)someMessage;
 
-//When a alert view has already been created and we want to modify it's contents use this method
--(void)reloadWith:(NSString *)message andImage:(UIImage *)someImage;
-
 //Show or hide the view
 -(void)presentAlertFor:(float)seconds;
-
-//Appear and dissapear
--(void)enterLimbo:(id)sender;
--(void)leaveLimbo:(id)sender;
 
 //Spinner Methods
 -(void)presentAlertWithSpinner;

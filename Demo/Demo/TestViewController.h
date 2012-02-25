@@ -7,7 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GIDAAlertView.h"
 
-@interface TestViewController : UIViewController
+@interface TestViewController : UIViewController{
+    UISegmentedControl *segmentedSelector;
+    
+    @private
+    GIDAAlertView *spinnerAlert;
+    GIDAAlertView *customAlert;
+}
+
+@property (retain, readwrite) IBOutlet UISegmentedControl *segmentedSelector;
+@property (retain, readwrite) GIDAAlertView *spinnerAlert;
+@property (retain, readwrite) GIDAAlertView *customAlert;
+
+
+-(IBAction)showAlert:(id)sender;
 
 @end
