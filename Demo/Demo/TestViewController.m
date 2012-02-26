@@ -33,29 +33,19 @@
 -(IBAction)showAlert:(id)sender{
     if ([segmentedSelector selectedSegmentIndex] == 0) {
         //Depending on the initialization type, the behavior will be different
-        NSLog(@"Presenting the alert");
         [customAlert presentAlertFor:2];
     }
     else{
-        if([spinnerAlert isHidden] == YES){
+        if([spinnerAlert alertIsVisible] == NO){
             [spinnerAlert presentAlertWithSpinner];
+        }
+        else{
+            [spinnerAlert hideAlertWithSpinner];
         }
     }
 }
 
 #pragma mark - View lifecycle
--(void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:YES];
-    
-    //Get the view at the bottom of the hierarchy
-    NSArray *arrayOfViews=[NSArray arrayWithArray:[[[UIApplication sharedApplication] keyWindow] subviews]];    
-    UIView *lastView=[arrayOfViews objectAtIndex:[arrayOfViews count]-1];
-    
-    //Add that to the view
-    [lastView addSubview:spinnerAlert];
-    [lastView addSubview:customAlert];
-}
-
 - (void)viewDidUnload{
     [super viewDidUnload];
     // Release any retained subviews of the main view.

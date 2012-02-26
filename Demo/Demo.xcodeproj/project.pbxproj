@@ -18,6 +18,7 @@
 		DD2C7C1414EA214E00F7752C /* GIDAAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2C7C1114EA214E00F7752C /* GIDAAlertView.m */; };
 		DD2C7C1C14EA228300F7752C /* noresource.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2C7C1A14EA228300F7752C /* noresource.png */; };
 		DD2C7C1D14EA228300F7752C /* noresource@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2C7C1B14EA228300F7752C /* noresource@2x.png */; };
+		DD439F3714F9C61F006F131D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD439F3614F9C61F006F131D /* QuartzCore.framework */; };
 		DDFF3D0B14EDFB9F0082BDC4 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DDFF3D0A14EDFB9F0082BDC4 /* TestViewController.m */; };
 		DDFF3D0E14EDFC300082BDC4 /* Test.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDFF3D0D14EDFC300082BDC4 /* Test.xib */; };
 /* End PBXBuildFile section */
@@ -39,6 +40,7 @@
 		DD2C7C1114EA214E00F7752C /* GIDAAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GIDAAlertView.m; sourceTree = "<group>"; };
 		DD2C7C1A14EA228300F7752C /* noresource.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = noresource.png; sourceTree = "<group>"; };
 		DD2C7C1B14EA228300F7752C /* noresource@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "noresource@2x.png"; sourceTree = "<group>"; };
+		DD439F3614F9C61F006F131D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		DDFF3D0914EDFB9F0082BDC4 /* TestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
 		DDFF3D0A14EDFB9F0082BDC4 /* TestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
 		DDFF3D0D14EDFC300082BDC4 /* Test.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Test.xib; sourceTree = "<group>"; };
@@ -49,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD439F3714F9C61F006F131D /* QuartzCore.framework in Frameworks */,
 				DD2C7BF414EA212A00F7752C /* UIKit.framework in Frameworks */,
 				DD2C7BF614EA212A00F7752C /* Foundation.framework in Frameworks */,
 				DD2C7BF814EA212A00F7752C /* CoreGraphics.framework in Frameworks */,
@@ -81,6 +84,7 @@
 				DD2C7BF314EA212A00F7752C /* UIKit.framework */,
 				DD2C7BF514EA212A00F7752C /* Foundation.framework */,
 				DD2C7BF714EA212A00F7752C /* CoreGraphics.framework */,
+				DD439F3614F9C61F006F131D /* QuartzCore.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

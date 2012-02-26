@@ -8,23 +8,63 @@
 
 #import "GIDAAlertView.h"
 
+//Private methods of the class
+@interface GIDAAlertView (private)
+
+-(void)enterLimbo:(id)sender;
+-(void)leaveLimbo:(id)sender;
+
+-(void)addToBottomView:(id)sender;
+
+@end
+
+@implementation GIDAAlertView (private)
+
+-(void)enterLimbo:(id)sender{
+    [NSThread sleepForTimeInterval:secondsVisible];
+    [self performSelectorOnMainThread:@selector(leaveLimbo:) withObject:nil waitUntilDone:YES];
+}
+
+-(void)leaveLimbo:(id)sender{
+    //Remove the view 
+    [self removeFromSuperview];
+    
+    [UIView animateWithDuration:kGIDAAlertViewAnimationDuration animations:^{
+        [self setAlpha:0.0];
+    }];
+    
+    //Update the ivars
+    alertIsVisible=NO;
+}
+
+-(void)addToBottomView:(id)sender{
+    //Get the view that is down at the bottom
+    NSArray *arrayOfViews=[NSArray arrayWithArray:[[[UIApplication sharedApplication] keyWindow] subviews]];    
+    UIView *lastView=[arrayOfViews objectAtIndex:[arrayOfViews count]-1];
+    //Add the alert
+    [lastView addSubview:self];
+}
+
+@end
+
 @implementation GIDAAlertView
 
-@synthesize secondsVisible;
+@synthesize secondsVisible, alertIsVisible;
 @synthesize messageLabel, theImageView, theBackgroundView;
 @synthesize type;
 
 -(id)initWithMessage:(NSString *)someMessage andAlertImage:(UIImage *)someImage{
     if(self = [super initWithFrame:CGRectMake(70, 100, 180, 180)]){
+        //This allows the user to keep interaction with the screen
+        [self setClipsToBounds:YES];
         
-        //Be able to see anything behind the view
-        [self setBackgroundColor:[UIColor clearColor]];
+        //Customize the vie by making it transparent and round in the corners
+        [self setBackgroundColor:[UIColor blackColor]];
+        [self setAlpha:0.80];
+        [[self layer] setMasksToBounds:YES];
+        [[self layer] setCornerRadius:20.0];
         
-        //Images
-        theBackgroundView=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"alertBackground.png"]];
-        [theBackgroundView setFrame:CGRectMake(0, 0, 180, 180)];
-        [self addSubview:theBackgroundView];
-        
+        //The Label
         messageLabel=[[UILabel alloc] initWithFrame:CGRectMake(10, 110, 170, 60)];
         [messageLabel setText:someMessage];
         [messageLabel setTextColor:[UIColor whiteColor]];
@@ -38,27 +78,30 @@
         theImageView=[[UIImageView alloc] initWithImage:someImage];
         [theImageView setFrame:CGRectMake(50, 20, 80, 80)];
         [self addSubview:theImageView];
+        [self setContentMode:UIViewContentModeScaleAspectFit];
         
-        [self setHidden:YES];
+        //Should start hidden from the <<eye>>
+        alertIsVisible=NO;
         
+        //Type custom has a seconds visible class
         type=GIDAAlertViewTypeCustom;
-        
         secondsVisible=0;
     }
     return self;
 }
 
 -(id)initAlertWithSpinnerAndMessage:(NSString *)someMessage{
-    if(self = [super initWithFrame:CGRectMake(0, 0, 320, 414)]){
+    if(self = [super initWithFrame:CGRectMake(70, 100, 180, 180)]){
+        //This allows the user to keep interaction with the screen
+        [self setClipsToBounds:YES];
         
-        //Be able to see anything behind the view
-        [self setBackgroundColor:[UIColor clearColor]];
-        UIView *theView = [[UIView alloc] initWithFrame:CGRectMake(70,100,180,180)];
-        //Images
-        theBackgroundView=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"alertBackground.png"]];
-        [theBackgroundView setFrame:CGRectMake(0, 0, 180, 180)];
-        [theView addSubview:theBackgroundView];
+        //Customize the vie by making it transparent and round in the corners
+        [self setBackgroundColor:[UIColor blackColor]];
+        [self setAlpha:0.80];
+        [[self layer] setMasksToBounds:YES];
+        [[self layer] setCornerRadius:20.0];
         
+        //The label
         messageLabel=[[UILabel alloc] initWithFrame:CGRectMake(10, 110, 170, 60)];
         [messageLabel setText:someMessage];
         [messageLabel setTextColor:[UIColor whiteColor]];
@@ -67,21 +110,22 @@
         [messageLabel setFont:[UIFont systemFontOfSize:20]];
         [messageLabel setNumberOfLines:0];
         [messageLabel setAdjustsFontSizeToFitWidth:YES];
-        [theView addSubview:messageLabel];
+        [self addSubview:messageLabel];
         
+        //This GIDAAlertViewType has a spinner
         UIActivityIndicatorView *theSpinner=[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         [theSpinner setFrame:CGRectMake(50, 20, 80, 80)];
         [theSpinner startAnimating];
-        [theView addSubview:theSpinner];
+        [self addSubview:theSpinner];
         [theSpinner release];
         
-        [self setHidden:NO];
+        //It always start hidden from the <<eye>> 
+        alertIsVisible=NO;
         
+        //Set the type
         type=GIDAAlertViewTypeLoading;
         
         secondsVisible=0;
-        [self addSubview:theView];
-        [theView release];
     }
     return self;
 }
@@ -95,32 +139,56 @@
 }
 
 -(void)presentAlertFor:(float)seconds{
-    [self setSecondsVisible:seconds];
-    [self setHidden:NO];
-    
-    //We are going to be waiting for a time interval, so in order to avoid blocking the main thread
-    //perform the waiting in another thread
-    [NSThread detachNewThreadSelector:@selector(enterLimbo:) toTarget:self withObject:nil];
+    //Prevent from calling this method on a different GIDAAlertViewType
+    if (type == GIDAAlertViewTypeCustom && alertIsVisible == NO) {
+        [self addToBottomView:nil];
+        
+        //Update the ivars
+        [self setSecondsVisible:seconds];
+        [self setAlpha:0.80];
+        alertIsVisible=YES;
+        
+        //We are going to be waiting for a time interval, so in order to avoid blocking the main thread
+        //perform the waiting in another thread
+        [NSThread detachNewThreadSelector:@selector(enterLimbo:) toTarget:self withObject:nil];
+    }
+    else if (type == GIDAAlertViewTypeLoading){
+        NSLog(@"GIDAAlertView**:Can't call presentAlertFor:(float)seconds on GIDAAlertViewTypeLoading");
+    }
 }
 
 -(void)presentAlertWithSpinner {
-    [self setHidden:NO];
+    //Prevent from calling this method on a different GIDAAlertViewType
+    if (type == GIDAAlertViewTypeLoading && alertIsVisible == NO) {
+        [self addToBottomView:nil];    
+        [self setAlpha:0.80];
+        alertIsVisible=YES;
+    }
+    else if (type == GIDAAlertViewTypeCustom){
+        NSLog(@"GIDAAlertView**:Can't call presentAlertWithSpinners on GIDAAlertViewTypeCustom");
+    }
 }
 
 -(void)hideAlertWithSpinner {
-    [self setHidden:YES];
-}
-
--(void)enterLimbo:(id)sender{
-    [NSThread sleepForTimeInterval:secondsVisible];
-    [self performSelectorOnMainThread:@selector(leaveLimbo:) withObject:nil waitUntilDone:YES];
-}
--(void)leaveLimbo:(id)sender{
-    [self setHidden:YES];
+    //Prevent from calling this method on a different GIDAAlertViewType
+    if (type == GIDAAlertViewTypeLoading && alertIsVisible == YES) {
+        [self removeFromSuperview];
+        [self setAlpha:0.80];
+        //Hide the view using the alpha
+        [UIView animateWithDuration:kGIDAAlertViewAnimationDuration animations:^{
+            [self setAlpha:0.5];
+            [self setAlpha:0.0];
+        }];
+        
+        alertIsVisible=NO;
+    }
+    else if (type == GIDAAlertViewTypeCustom){
+        NSLog(@"GIDAAlertView**:Can't call hideAlertWithSpinner on GIDAAlertViewTypeCustom");
+    }
 }
 
 -(void)dealloc{
-    [theBackgroundView release];
+    //[theBackgroundView release];
     [messageLabel release];
     
     if (type == GIDAAlertViewTypeCustom) {
@@ -129,5 +197,4 @@
     
     [super dealloc];
 }
-
 @end
