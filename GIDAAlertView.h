@@ -5,11 +5,10 @@
 //  Copyright (c) 2011 Polar Bears Nanotechnology Research ©. All rights reserved.
 //
 //  To do:
-//      + Manually draw the background = Done Yoshiki 25/02/12
 //      + Support iPhone (landscape)
-//      + Support iPad (portrait, landscape)
-//      + Annimate apparition
+//      + Support iPad (portrait, landscape) 
 //      + Support ARC
+//      + Support iOS 4 and lower
 
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
@@ -25,12 +24,12 @@ typedef enum {
     float secondsVisible;
     BOOL alertIsVisible;
     
-@private
+    @private
     UILabel *messageLabel;
     UIImageView *theImageView;
     UIImageView *theBackgroundView;
     
-@protected
+    @protected
     GIDAAlertViewType type;
 }
 

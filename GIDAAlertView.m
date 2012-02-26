@@ -26,12 +26,14 @@
 }
 
 -(void)leaveLimbo:(id)sender{
-    //Remove the view 
-    [self removeFromSuperview];
-    
+    //Remove the view     
     [UIView animateWithDuration:kGIDAAlertViewAnimationDuration animations:^{
-        [self setAlpha:0.0];
-    }];
+                        [self setAlpha:0.0];
+                    }
+                     completion:^(BOOL finished){
+                         [self removeFromSuperview];
+                     }
+     ];
     
     //Update the ivars
     alertIsVisible=NO;
@@ -59,11 +61,10 @@
         [self setClipsToBounds:YES];
         
         //Customize the vie by making it transparent and round in the corners
-        [self setBackgroundColor:[UIColor blackColor]];
-        [self setAlpha:0.80];
+        [self setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.8]];
         [[self layer] setMasksToBounds:YES];
         [[self layer] setCornerRadius:20.0];
-        
+
         //The Label
         messageLabel=[[UILabel alloc] initWithFrame:CGRectMake(10, 110, 170, 60)];
         [messageLabel setText:someMessage];
@@ -82,7 +83,7 @@
         
         //Should start hidden from the <<eye>>
         alertIsVisible=NO;
-        
+  
         //Type custom has a seconds visible class
         type=GIDAAlertViewTypeCustom;
         secondsVisible=0;
@@ -96,8 +97,7 @@
         [self setClipsToBounds:YES];
         
         //Customize the vie by making it transparent and round in the corners
-        [self setBackgroundColor:[UIColor blackColor]];
-        [self setAlpha:0.80];
+        [self setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.8]];
         [[self layer] setMasksToBounds:YES];
         [[self layer] setCornerRadius:20.0];
         
@@ -145,7 +145,7 @@
         
         //Update the ivars
         [self setSecondsVisible:seconds];
-        [self setAlpha:0.80];
+        [self setAlpha:1];
         alertIsVisible=YES;
         
         //We are going to be waiting for a time interval, so in order to avoid blocking the main thread
@@ -161,7 +161,7 @@
     //Prevent from calling this method on a different GIDAAlertViewType
     if (type == GIDAAlertViewTypeLoading && alertIsVisible == NO) {
         [self addToBottomView:nil];    
-        [self setAlpha:0.80];
+        [self setAlpha:1];
         alertIsVisible=YES;
     }
     else if (type == GIDAAlertViewTypeCustom){
@@ -172,13 +172,14 @@
 -(void)hideAlertWithSpinner {
     //Prevent from calling this method on a different GIDAAlertViewType
     if (type == GIDAAlertViewTypeLoading && alertIsVisible == YES) {
-        [self removeFromSuperview];
-        [self setAlpha:0.80];
         //Hide the view using the alpha
         [UIView animateWithDuration:kGIDAAlertViewAnimationDuration animations:^{
-            [self setAlpha:0.5];
-            [self setAlpha:0.0];
-        }];
+                            [self setAlpha:0.0];
+                         }
+                         completion:^(BOOL finished){
+                             [self removeFromSuperview];
+                         }
+         ];
         
         alertIsVisible=NO;
     }
