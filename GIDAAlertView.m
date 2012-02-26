@@ -4,7 +4,7 @@
 //
 //  Created by Yoshiki - Vázquez Baeza on 25/10/11.
 //  Copyright (c) 2011 Polar Bears Nanotechnology Research ©. All rights reserved.
-////
+//
 
 #import "GIDAAlertView.h"
 
