@@ -28,6 +28,8 @@
 - (void)dealloc{
     [segmentedSelector release];
     [spinnerAlert release];
+    
+    [super dealloc];
 }
 
 -(IBAction)showAlert:(id)sender{
