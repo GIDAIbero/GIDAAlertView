@@ -4,15 +4,14 @@ This is an elegant and easy to use alert view. Very similar to what the "volume 
 
 # Usage
 
-`
-//Just initalize the object
-GIDAAlertView *alertView;
-alertView=[[GIDAAlertView alloc] initAlertWithSpinnerAndMessage:@"GIDAAlertView Spinner"];
-alertView presetnAlertWithSpinner];
+	//Just initalize the object
+	GIDAAlertView *alertView;
+	alertView=[[GIDAAlertView alloc] initAlertWithSpinnerAndMessage:@"GIDAAlertView Spinner"];
+	alertView presetnAlertWithSpinner];
 
-//Later in your code
-[alertView hideAlertWithSpinner];
-`
+	//Later in your code
+	[alertView hideAlertWithSpinner];
+
 # License
 
 Permission is hereby granted, free of charge, to any person obtaining
