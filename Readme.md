@@ -2,6 +2,11 @@
 
 This is an elegant and easy to use alert view. Very similar to what the "volume up" or "volume down" alerts on Mac OS X look like though this is for iOS.
 
+# Screenshots
+
+![GIDAAlertView Custom]( http://cloud.github.com/downloads/ElDeveloper/GIDAAlertView/custom.png  )
+![GIDAAlertView Spinner]( http://cloud.github.com/downloads/ElDeveloper/GIDAAlertView/spinner.png  )
+
 # Usage
 
 	//Just initalize the object
