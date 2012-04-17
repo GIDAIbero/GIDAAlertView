@@ -1,4 +1,19 @@
+# Description
+
 This is an elegant and easy to use alert view. Very similar to what the "volume up" or "volume down" alerts on Mac OS X look like though this is for iOS.
+
+# Usage
+
+`
+//Just initalize the object
+GIDAAlertView *alertView;
+alertView=[[GIDAAlertView alloc] initAlertWithSpinnerAndMessage:@"GIDAAlertView Spinner"];
+alertView presetnAlertWithSpinner];
+
+//Later in your code
+[alertView hideAlertWithSpinner];
+`
+# License
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

@@ -5,7 +5,6 @@
 //  Copyright (c) 2011 Polar Bears Nanotechnology Research ©. All rights reserved.
 //
 //  To do:
-//      + Support iPhone (landscape)
 //      + Support iPad (portrait, landscape) 
 //      + Support ARC
 //      + Support iOS 4 and lower
@@ -14,6 +13,9 @@
 #import <QuartzCore/QuartzCore.h>
 
 #define kGIDAAlertViewAnimationDuration 1
+
+extern CGRect const kiPhonePortraitRect;
+extern CGRect const kiPhoneLandscapeRect;
 
 typedef enum {
     GIDAAlertViewTypeCustom=0,
@@ -61,5 +63,6 @@ typedef enum {
 -(void)presentAlertWithSpinner;
 -(void)hideAlertWithSpinner;
 
+-(void)updateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation;
 
 @end

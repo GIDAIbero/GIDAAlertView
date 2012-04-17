@@ -47,6 +47,15 @@
     }
 }
 
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation{
+    return YES;
+}
+
+-(void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
+    [customAlert updateToInterfaceOrientation:toInterfaceOrientation];
+    [spinnerAlert updateToInterfaceOrientation:toInterfaceOrientation];
+}
+
 #pragma mark - View lifecycle
 - (void)viewDidUnload{
     [super viewDidUnload];

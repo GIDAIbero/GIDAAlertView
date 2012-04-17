@@ -8,6 +8,9 @@
 
 #import "GIDAAlertView.h"
 
+CGRect const kiPhonePortraitRect={{.x=70, .y=100}, {.width=180, .height=180}};
+CGRect const kiPhoneLandscapeRect={{.x=150, .y=30}, {.width=180, .height=180}};
+
 //Private methods of the class
 @interface GIDAAlertView (private)
 
@@ -31,7 +34,9 @@
                         [self setAlpha:0.0];
                     }
                      completion:^(BOOL finished){
-                         [self removeFromSuperview];
+                         if (finished) {
+                             [self removeFromSuperview];
+                         }
                      }
      ];
     
@@ -56,7 +61,7 @@
 @synthesize type;
 
 -(id)initWithMessage:(NSString *)someMessage andAlertImage:(UIImage *)someImage{
-    if(self = [super initWithFrame:CGRectMake(70, 100, 180, 180)]){
+    if(self = [super initWithFrame:kiPhonePortraitRect]){
         //This allows the user to keep interaction with the screen
         [self setClipsToBounds:YES];
         
@@ -66,20 +71,26 @@
         [[self layer] setCornerRadius:20.0];
 
         //The Label
-        messageLabel=[[UILabel alloc] initWithFrame:CGRectMake(10, 110, 170, 60)];
+        messageLabel=[[UILabel alloc] initWithFrame:CGRectMake(0, 110, 180, 60)];
         [messageLabel setText:someMessage];
         [messageLabel setTextColor:[UIColor whiteColor]];
         [messageLabel setTextAlignment:UITextAlignmentCenter];
         [messageLabel setBackgroundColor:[UIColor clearColor]];
-        [messageLabel setFont:[UIFont systemFontOfSize:20]];
+        [messageLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:20]];
+        [messageLabel setShadowColor:[UIColor grayColor]];
+        [messageLabel setShadowOffset:CGSizeMake(1, 0.78)];
         [messageLabel setNumberOfLines:0];
         [messageLabel setAdjustsFontSizeToFitWidth:YES];
         [self addSubview:messageLabel];
         
+        //Main icon of the alert view
         theImageView=[[UIImageView alloc] initWithImage:someImage];
         [theImageView setFrame:CGRectMake(50, 20, 80, 80)];
         [self addSubview:theImageView];
         [self setContentMode:UIViewContentModeScaleAspectFit];
+        
+        CGAffineTransform landscapeTransformation=CGAffineTransformMakeTranslation(0, 0);
+        [self setTransform:CGAffineTransformTranslate(landscapeTransformation, 0, 0)];
         
         //Should start hidden from the <<eye>>
         alertIsVisible=NO;
@@ -92,7 +103,7 @@
 }
 
 -(id)initAlertWithSpinnerAndMessage:(NSString *)someMessage{
-    if(self = [super initWithFrame:CGRectMake(70, 100, 180, 180)]){
+    if(self = [super initWithFrame:kiPhonePortraitRect]){
         //This allows the user to keep interaction with the screen
         [self setClipsToBounds:YES];
         
@@ -102,12 +113,14 @@
         [[self layer] setCornerRadius:20.0];
         
         //The label
-        messageLabel=[[UILabel alloc] initWithFrame:CGRectMake(10, 110, 170, 60)];
+        messageLabel=[[UILabel alloc] initWithFrame:CGRectMake(0, 110, 180, 60)];
         [messageLabel setText:someMessage];
         [messageLabel setTextColor:[UIColor whiteColor]];
         [messageLabel setTextAlignment:UITextAlignmentCenter];
         [messageLabel setBackgroundColor:[UIColor clearColor]];
-        [messageLabel setFont:[UIFont systemFontOfSize:20]];
+        [messageLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:20]];
+        [messageLabel setShadowColor:[UIColor grayColor]];
+        [messageLabel setShadowOffset:CGSizeMake(1, 0.78)];
         [messageLabel setNumberOfLines:0];
         [messageLabel setAdjustsFontSizeToFitWidth:YES];
         [self addSubview:messageLabel];
@@ -130,11 +143,13 @@
     return self;
 }
 
-
 -(void)reloadWith:(NSString *)message andImage:(UIImage *)someImage{
     if (type == GIDAAlertViewTypeCustom) {
         [messageLabel setText:message];
         [theImageView setImage:someImage];
+    }
+    else {
+        NSLog(@"GIDAAlertView**:Can't call reloadWith:(NSString *)message andImage:(UIImage *)someImage on GIDAAlertViewTypeLoading");
     }
 }
 
@@ -177,7 +192,9 @@
                             [self setAlpha:0.0];
                          }
                          completion:^(BOOL finished){
-                             [self removeFromSuperview];
+                             if (finished) {
+                                 [self removeFromSuperview];
+                             }                             
                          }
          ];
         
@@ -188,10 +205,24 @@
     }
 }
 
+-(void)updateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation{
+    
+    //Landscape
+    if (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft || toInterfaceOrientation == UIInterfaceOrientationLandscapeRight) {
+        [self setFrame:kiPhoneLandscapeRect];
+    }
+    
+    //Portrait
+    if (toInterfaceOrientation == UIInterfaceOrientationPortrait || toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown ) {
+        [self setFrame:kiPhonePortraitRect];
+    }
+    
+}
+
 -(void)dealloc{
-    //[theBackgroundView release];
     [messageLabel release];
     
+    //This property is only allocated when the type is custom
     if (type == GIDAAlertViewTypeCustom) {
         [theImageView release];
     }
