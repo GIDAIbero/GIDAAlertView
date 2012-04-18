@@ -5,7 +5,6 @@
 //  Copyright (c) 2011 Polar Bears Nanotechnology Research ©. All rights reserved.
 //
 //  To do:
-//      + Support iPad (portrait, landscape) 
 //      + Support ARC
 //      + Support iOS 4 and lower
 
@@ -16,6 +15,8 @@
 
 extern CGRect const kiPhonePortraitRect;
 extern CGRect const kiPhoneLandscapeRect;
+extern CGRect const kiPadPortraitRect;
+extern CGRect const kiPadLandscapeRect;
 
 typedef enum {
     GIDAAlertViewTypeCustom=0,
@@ -44,7 +45,10 @@ typedef enum {
 
 @property (nonatomic, assign) GIDAAlertViewType type;
 
-//**GIDAAlertViewTypeCustom
+//Basic constructor
+-(id)init;
+
+//**GIDAAlertViewTypeCustom**
 //Simple alert to present a short message to the user aided with an image (80x80 px)
 -(id)initWithMessage:(NSString *)someMessage andAlertImage:(UIImage *)someImage;
 
@@ -63,6 +67,7 @@ typedef enum {
 -(void)presentAlertWithSpinner;
 -(void)hideAlertWithSpinner;
 
+//Call this method when supporting various interface orientations 
 -(void)updateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation;
 
 @end

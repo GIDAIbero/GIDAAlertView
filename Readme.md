@@ -1,6 +1,8 @@
 # Description
 
-The GIDAAlertView is a class created to display a short message and show an icon (usually related to the message that's been displayed) to the user. The layout is very similar to what Mac OS X uses to show the "volume up" and the "volume down" notifications. As an option you can create a GIDAAlertView displaying a spinner and a message, the thread management is already done for you.
+The GIDAAlertView class (very similar to the MBProgressHUD) is used to display a short message and show an icon (usually related to the message that's been displayed) to the user. The layout is very similar to what Mac OS X uses to show the "volume up" and the "volume down" notifications. As an option you can create a GIDAAlertView displaying a spinner and a message, the thread management is already done for you.
+
+Currently supports iPhone, iPod and iPad hardware starting with iOS 5.
 
 # Screenshots
 

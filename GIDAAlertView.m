@@ -10,9 +10,14 @@
 
 CGRect const kiPhonePortraitRect={{.x=70, .y=100}, {.width=180, .height=180}};
 CGRect const kiPhoneLandscapeRect={{.x=150, .y=30}, {.width=180, .height=180}};
+CGRect const kiPadPortraitRect={{.x=294, .y=300}, {.width=180, .height=180}};
+CGRect const kiPadLandscapeRect={{.x=422, .y=144}, {.width=180, .height=180}};
 
-//Private methods of the class
+//Private methods of the class 1024x768
 @interface GIDAAlertView (private)
+
+//Determine the rect used for the position of the view
++(CGRect)rectForInterfaceOrientation:(UIInterfaceOrientation)theInterfaceOrientation;
 
 -(void)enterLimbo:(id)sender;
 -(void)leaveLimbo:(id)sender;
@@ -22,6 +27,32 @@ CGRect const kiPhoneLandscapeRect={{.x=150, .y=30}, {.width=180, .height=180}};
 @end
 
 @implementation GIDAAlertView (private)
+
++(CGRect)rectForInterfaceOrientation:(UIInterfaceOrientation)theInterfaceOrientation{
+    
+    //Choose between a phone/pod or pad then return the appropiate constant
+    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        
+        if (theInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown || theInterfaceOrientation == UIInterfaceOrientationPortrait) {
+            return kiPhonePortraitRect;
+        }
+        else {
+            return kiPhoneLandscapeRect;
+        }
+    }
+    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ) {
+        
+        if (theInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown || theInterfaceOrientation == UIInterfaceOrientationPortrait) {
+            return kiPadPortraitRect;
+        }
+        else {
+            return kiPadLandscapeRect;
+        }
+    }
+    
+    //Default safe return value
+    return CGRectZero;
+}
 
 -(void)enterLimbo:(id)sender{
     [NSThread sleepForTimeInterval:secondsVisible];
@@ -60,8 +91,8 @@ CGRect const kiPhoneLandscapeRect={{.x=150, .y=30}, {.width=180, .height=180}};
 @synthesize messageLabel, theImageView, theBackgroundView;
 @synthesize type;
 
--(id)initWithMessage:(NSString *)someMessage andAlertImage:(UIImage *)someImage{
-    if(self = [super initWithFrame:kiPhonePortraitRect]){
+-(id)init{
+    if (self = [super initWithFrame:[GIDAAlertView rectForInterfaceOrientation:UIInterfaceOrientationPortrait]]) {
         //This allows the user to keep interaction with the screen
         [self setClipsToBounds:YES];
         
@@ -69,10 +100,13 @@ CGRect const kiPhoneLandscapeRect={{.x=150, .y=30}, {.width=180, .height=180}};
         [self setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.8]];
         [[self layer] setMasksToBounds:YES];
         [[self layer] setCornerRadius:20.0];
+        
+        //It always start hidden from the <<eye>> 
+        alertIsVisible=NO;        
+        secondsVisible=0;
 
         //The Label
         messageLabel=[[UILabel alloc] initWithFrame:CGRectMake(0, 110, 180, 60)];
-        [messageLabel setText:someMessage];
         [messageLabel setTextColor:[UIColor whiteColor]];
         [messageLabel setTextAlignment:UITextAlignmentCenter];
         [messageLabel setBackgroundColor:[UIColor clearColor]];
@@ -82,48 +116,29 @@ CGRect const kiPhoneLandscapeRect={{.x=150, .y=30}, {.width=180, .height=180}};
         [messageLabel setNumberOfLines:0];
         [messageLabel setAdjustsFontSizeToFitWidth:YES];
         [self addSubview:messageLabel];
+    }
+    return self;
+}
+
+-(id)initWithMessage:(NSString *)someMessage andAlertImage:(UIImage *)someImage{
+    if(self = [self init]){
+        [messageLabel setText:someMessage];
         
         //Main icon of the alert view
         theImageView=[[UIImageView alloc] initWithImage:someImage];
         [theImageView setFrame:CGRectMake(50, 20, 80, 80)];
         [self addSubview:theImageView];
         [self setContentMode:UIViewContentModeScaleAspectFit];
-        
-        CGAffineTransform landscapeTransformation=CGAffineTransformMakeTranslation(0, 0);
-        [self setTransform:CGAffineTransformTranslate(landscapeTransformation, 0, 0)];
-        
-        //Should start hidden from the <<eye>>
-        alertIsVisible=NO;
   
         //Type custom has a seconds visible class
         type=GIDAAlertViewTypeCustom;
-        secondsVisible=0;
     }
     return self;
 }
 
 -(id)initAlertWithSpinnerAndMessage:(NSString *)someMessage{
-    if(self = [super initWithFrame:kiPhonePortraitRect]){
-        //This allows the user to keep interaction with the screen
-        [self setClipsToBounds:YES];
-        
-        //Customize the vie by making it transparent and round in the corners
-        [self setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.8]];
-        [[self layer] setMasksToBounds:YES];
-        [[self layer] setCornerRadius:20.0];
-        
-        //The label
-        messageLabel=[[UILabel alloc] initWithFrame:CGRectMake(0, 110, 180, 60)];
+    if(self = [self init]){
         [messageLabel setText:someMessage];
-        [messageLabel setTextColor:[UIColor whiteColor]];
-        [messageLabel setTextAlignment:UITextAlignmentCenter];
-        [messageLabel setBackgroundColor:[UIColor clearColor]];
-        [messageLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:20]];
-        [messageLabel setShadowColor:[UIColor grayColor]];
-        [messageLabel setShadowOffset:CGSizeMake(1, 0.78)];
-        [messageLabel setNumberOfLines:0];
-        [messageLabel setAdjustsFontSizeToFitWidth:YES];
-        [self addSubview:messageLabel];
         
         //This GIDAAlertViewType has a spinner
         UIActivityIndicatorView *theSpinner=[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
@@ -132,13 +147,8 @@ CGRect const kiPhoneLandscapeRect={{.x=150, .y=30}, {.width=180, .height=180}};
         [self addSubview:theSpinner];
         [theSpinner release];
         
-        //It always start hidden from the <<eye>> 
-        alertIsVisible=NO;
-        
         //Set the type
         type=GIDAAlertViewTypeLoading;
-        
-        secondsVisible=0;
     }
     return self;
 }
@@ -198,6 +208,7 @@ CGRect const kiPhoneLandscapeRect={{.x=150, .y=30}, {.width=180, .height=180}};
                          }
          ];
         
+        //Update the ivars
         alertIsVisible=NO;
     }
     else if (type == GIDAAlertViewTypeCustom){
@@ -209,12 +220,12 @@ CGRect const kiPhoneLandscapeRect={{.x=150, .y=30}, {.width=180, .height=180}};
     
     //Landscape
     if (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft || toInterfaceOrientation == UIInterfaceOrientationLandscapeRight) {
-        [self setFrame:kiPhoneLandscapeRect];
+        [self setFrame:[GIDAAlertView rectForInterfaceOrientation:toInterfaceOrientation]];
     }
     
     //Portrait
     if (toInterfaceOrientation == UIInterfaceOrientationPortrait || toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown ) {
-        [self setFrame:kiPhonePortraitRect];
+        [self setFrame:[GIDAAlertView rectForInterfaceOrientation:toInterfaceOrientation]];
     }
     
 }

@@ -13,8 +13,6 @@
 		DD2C7BFE14EA212A00F7752C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD2C7BFC14EA212A00F7752C /* InfoPlist.strings */; };
 		DD2C7C0014EA212A00F7752C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2C7BFF14EA212A00F7752C /* main.m */; };
 		DD2C7C0414EA212A00F7752C /* GIDAAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2C7C0314EA212A00F7752C /* GIDAAppDelegate.m */; };
-		DD2C7C1214EA214E00F7752C /* alertBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2C7C0E14EA214E00F7752C /* alertBackground.png */; };
-		DD2C7C1314EA214E00F7752C /* alertBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2C7C0F14EA214E00F7752C /* alertBackground@2x.png */; };
 		DD2C7C1414EA214E00F7752C /* GIDAAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2C7C1114EA214E00F7752C /* GIDAAlertView.m */; };
 		DD2C7C1C14EA228300F7752C /* noresource.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2C7C1A14EA228300F7752C /* noresource.png */; };
 		DD2C7C1D14EA228300F7752C /* noresource@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2C7C1B14EA228300F7752C /* noresource@2x.png */; };
@@ -34,8 +32,6 @@
 		DD2C7C0114EA212A00F7752C /* Demo-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Demo-Prefix.pch"; sourceTree = "<group>"; };
 		DD2C7C0214EA212A00F7752C /* GIDAAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GIDAAppDelegate.h; sourceTree = "<group>"; };
 		DD2C7C0314EA212A00F7752C /* GIDAAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GIDAAppDelegate.m; sourceTree = "<group>"; };
-		DD2C7C0E14EA214E00F7752C /* alertBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = alertBackground.png; sourceTree = "<group>"; };
-		DD2C7C0F14EA214E00F7752C /* alertBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "alertBackground@2x.png"; sourceTree = "<group>"; };
 		DD2C7C1014EA214E00F7752C /* GIDAAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GIDAAlertView.h; sourceTree = "<group>"; };
 		DD2C7C1114EA214E00F7752C /* GIDAAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GIDAAlertView.m; sourceTree = "<group>"; };
 		DD2C7C1A14EA228300F7752C /* noresource.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = noresource.png; sourceTree = "<group>"; };
@@ -119,8 +115,6 @@
 			isa = PBXGroup;
 			children = (
 				DDFF3D0D14EDFC300082BDC4 /* Test.xib */,
-				DD2C7C0E14EA214E00F7752C /* alertBackground.png */,
-				DD2C7C0F14EA214E00F7752C /* alertBackground@2x.png */,
 				DD2C7C1A14EA228300F7752C /* noresource.png */,
 				DD2C7C1B14EA228300F7752C /* noresource@2x.png */,
 			);
@@ -179,8 +173,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD2C7BFE14EA212A00F7752C /* InfoPlist.strings in Resources */,
-				DD2C7C1214EA214E00F7752C /* alertBackground.png in Resources */,
-				DD2C7C1314EA214E00F7752C /* alertBackground@2x.png in Resources */,
 				DD2C7C1C14EA228300F7752C /* noresource.png in Resources */,
 				DD2C7C1D14EA228300F7752C /* noresource@2x.png in Resources */,
 				DDFF3D0E14EDFC300082BDC4 /* Test.xib in Resources */,
@@ -264,7 +256,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Demo/Demo-Prefix.pch";
 				INFOPLIST_FILE = "Demo/Demo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 2;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -275,7 +269,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Demo/Demo-Prefix.pch";
 				INFOPLIST_FILE = "Demo/Demo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 2;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
