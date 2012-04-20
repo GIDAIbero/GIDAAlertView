@@ -68,6 +68,6 @@ typedef enum {
 -(void)hideAlertWithSpinner;
 
 //Call this method when supporting various interface orientations 
--(void)updateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation;
+-(void)updateToInterfaceOrientation;
 
 @end

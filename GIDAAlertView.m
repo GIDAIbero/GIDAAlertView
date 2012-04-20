@@ -116,6 +116,9 @@ CGRect const kiPadLandscapeRect={{.x=422, .y=144}, {.width=180, .height=180}};
         [messageLabel setNumberOfLines:0];
         [messageLabel setAdjustsFontSizeToFitWidth:YES];
         [self addSubview:messageLabel];
+        
+        //Listen to the notification center
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateToInterfaceOrientation) name:@"UIDeviceOrientationDidChangeNotification" object:[UIDevice currentDevice]];
     }
     return self;
 }
@@ -216,7 +219,8 @@ CGRect const kiPadLandscapeRect={{.x=422, .y=144}, {.width=180, .height=180}};
     }
 }
 
--(void)updateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation{
+-(void)updateToInterfaceOrientation{
+    UIInterfaceOrientation toInterfaceOrientation=[[UIDevice currentDevice] orientation];
     
     //Landscape
     if (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft || toInterfaceOrientation == UIInterfaceOrientationLandscapeRight) {
