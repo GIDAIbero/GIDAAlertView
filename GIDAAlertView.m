@@ -244,4 +244,11 @@ CGRect const kiPadLandscapeRect={{.x=422, .y=144}, {.width=180, .height=180}};
     
     [super dealloc];
 }
+
++(void)presentAlertFor:(float)seconds withMessage:(NSString *)message andImage:(UIImage *)image{
+    GIDAAlertView *quickAlert=[[GIDAAlertView alloc] initWithMessage:message andAlertImage:image];
+    [quickAlert presentAlertFor:seconds];
+    [quickAlert release];
+}
+
 @end

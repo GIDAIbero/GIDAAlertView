@@ -70,4 +70,7 @@ typedef enum {
 //Call this method when supporting various interface orientations 
 -(void)updateToInterfaceOrientation;
 
+//Class methods, for easy use
++(void)presentAlertFor:(float)seconds withMessage:(NSString *)message andImage:(UIImage *)image;
+
 @end
