@@ -1,254 +1,339 @@
 //
-//  GIDAAlertView.m
-//  iBero
+//  GIDASearchAlert.m 2011/10/28 to 2013/02/27
+//  GIDAAlertView.m since 2013/02/27
+//  TestAlert
 //
-//  Created by Yoshiki - Vázquez Baeza on 25/10/11.
-//  Copyright (c) 2011 Polar Bears Nanotechnology Research ©. All rights reserved.
+//  Created by Alejandro Paredes on 10/28/11.
+//
+// Following methods are inspired in Yoshiki Vázquez Baeza work on previous versions
+// of GIDAAlertView.
+// - (id)initWithMessage:(NSString *)someMessage andAlertImage:(UIImage *)someImage;
+// - (id) initWithSpinnerAndMessage:(NSString *)message;
+// - (void)presentAlertFor:(float)seconds;
+// - (void)presentAlertWithSpinnerAndHideAfterSelector:(SEL)selector from:(id)sender;
 //
 
 #import "GIDAAlertView.h"
 
-CGRect const kiPhonePortraitRect={{.x=70, .y=100}, {.width=180, .height=180}};
-CGRect const kiPhoneLandscapeRect={{.x=150, .y=30}, {.width=180, .height=180}};
-CGRect const kiPadPortraitRect={{.x=294, .y=300}, {.width=180, .height=180}};
-CGRect const kiPadLandscapeRect={{.x=422, .y=144}, {.width=180, .height=180}};
-
-//Private methods of the class 1024x768
-@interface GIDAAlertView (private)
-
-//Determine the rect used for the position of the view
-+(CGRect)rectForInterfaceOrientation:(UIInterfaceOrientation)theInterfaceOrientation;
-
--(void)enterLimbo:(id)sender;
--(void)leaveLimbo:(id)sender;
-
--(void)addToBottomView:(id)sender;
-
-@end
-
-@implementation GIDAAlertView (private)
-
-+(CGRect)rectForInterfaceOrientation:(UIInterfaceOrientation)theInterfaceOrientation{
-    
-    //Choose between a phone/pod or pad then return the appropiate constant
-    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        
-        if (theInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown || theInterfaceOrientation == UIInterfaceOrientationPortrait) {
-            return kiPhonePortraitRect;
-        }
-        else {
-            return kiPhoneLandscapeRect;
-        }
-    }
-    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ) {
-        
-        if (theInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown || theInterfaceOrientation == UIInterfaceOrientationPortrait) {
-            return kiPadPortraitRect;
-        }
-        else {
-            return kiPadLandscapeRect;
-        }
-    }
-    
-    //Default safe return value
-    return CGRectZero;
+@interface GIDAAlertView() {
+    BOOL withSpinnerOrImage;
+    UIProgressView *progressView;
+    float progress;
+    NSTimer *timer;
+    double timeSeconds;
 }
+@property (nonatomic, retain) UIColor *alertColor;
+@property (nonatomic, retain) NSTimer *timer;
 
--(void)enterLimbo:(id)sender{
-    [NSThread sleepForTimeInterval:secondsVisible];
-    [self performSelectorOnMainThread:@selector(leaveLimbo:) withObject:nil waitUntilDone:YES];
-}
-
--(void)leaveLimbo:(id)sender{
-    //Remove the view     
-    [UIView animateWithDuration:kGIDAAlertViewAnimationDuration animations:^{
-                        [self setAlpha:0.0];
-                    }
-                     completion:^(BOOL finished){
-                         if (finished) {
-                             [self removeFromSuperview];
-                         }
-                     }
-     ];
-    
-    //Update the ivars
-    alertIsVisible=NO;
-}
-
--(void)addToBottomView:(id)sender{
-    //Get the view that is down at the bottom
-    NSArray *arrayOfViews=[NSArray arrayWithArray:[[[UIApplication sharedApplication] keyWindow] subviews]];    
-    UIView *lastView=[arrayOfViews objectAtIndex:[arrayOfViews count]-1];
-    //Add the alert
-    [lastView addSubview:self];
-}
+- (void) drawRoundedRect:(CGRect)rrect
+               inContext:(CGContextRef)context
+              withRadius:(CGFloat)radius;
 
 @end
 
 @implementation GIDAAlertView
+@synthesize textField;
+@synthesize theMessage;
+@synthesize timer = _timer;
 
-@synthesize secondsVisible, alertIsVisible;
-@synthesize messageLabel, theImageView, theBackgroundView;
-@synthesize type;
-
--(id)init{
-    if (self = [super initWithFrame:[GIDAAlertView rectForInterfaceOrientation:UIInterfaceOrientationPortrait]]) {
-        //This allows the user to keep interaction with the screen
-        [self setClipsToBounds:YES];
-        
-        //Customize the vie by making it transparent and round in the corners
-        [self setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.8]];
-        [[self layer] setMasksToBounds:YES];
-        [[self layer] setCornerRadius:20.0];
-        
-        //It always start hidden from the <<eye>> 
-        alertIsVisible=NO;        
-        secondsVisible=0;
-
-        //The Label
-        messageLabel=[[UILabel alloc] initWithFrame:CGRectMake(0, 110, 180, 60)];
-        [messageLabel setTextColor:[UIColor whiteColor]];
-        [messageLabel setTextAlignment:UITextAlignmentCenter];
+-(id)initWithProgressBarAndMessage:(NSString *)message andTime:(NSInteger)seconds {
+    self = [super initWithTitle:@"\n\n\n\n\n" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+    if (self) {
+        progress = -0.1;
+        timeSeconds = seconds/10;
+        withSpinnerOrImage = YES;
+        //progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
+        //  [progressView setProgress:0];
+        /*   [self addObserver:self forKeyPath:@"progress" options:NSKeyValueChangeNewKey context:nil];*/
+        //   [progressView setFrame:CGRectMake(100, 35, 80, 80)];
+        UIImageView *iv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Bar.png"]];
+        [iv setFrame:CGRectMake(100, 35, 0, 80)];
+        [self addSubview:iv];
+        //        [self addSubview:progressView];
+        UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 115, 160, 50)];
+        [messageLabel setTextAlignment:NSTextAlignmentCenter];
+        [messageLabel setText:message];
         [messageLabel setBackgroundColor:[UIColor clearColor]];
-        [messageLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:20]];
-        [messageLabel setShadowColor:[UIColor grayColor]];
-        [messageLabel setShadowOffset:CGSizeMake(1, 0.78)];
-        [messageLabel setNumberOfLines:0];
+        [messageLabel setTextColor:[UIColor whiteColor]];
+        [messageLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
         [messageLabel setAdjustsFontSizeToFitWidth:YES];
         [self addSubview:messageLabel];
-        
-        //Listen to the notification center
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateToInterfaceOrientation) name:@"UIDeviceOrientationDidChangeNotification" object:[UIDevice currentDevice]];
+        [messageLabel release];
+        [iv release];
     }
-    return self;
+    return  self;
+}
+-(void)moveProgress {
+    if (progress <= 1.0) {
+        UIImageView *iv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Bar.png"]];
+        [iv setFrame:CGRectMake(100, 35, 8+progress*80, 80)];
+        [self addSubview:iv];
+        progress += 0.1;
+        [iv release];
+        // [progressView setProgress:progress];
+    } else {
+#ifdef DEBUG
+        NSLog(@"INVALIDATE");
+#endif
+        [_timer invalidate];
+        _timer = nil;
+        [self dismissWithClickedButtonIndex:0 animated:YES];
+    }
+}
+-(void)presentProgressBar {
+    [self show];
+    _timer = [NSTimer timerWithTimeInterval:timeSeconds target:self selector:@selector(moveProgress) userInfo:nil repeats:YES];
+    [[NSRunLoop mainRunLoop] addTimer:_timer forMode:NSDefaultRunLoopMode];
+}
+-(id)initWithMessage:(NSString *)message andAlertImage:(UIImage *)image {
+    self = [super initWithTitle:@"\n\n\n\n\n" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+    if (self) {
+        withSpinnerOrImage = YES;
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+        [imageView setFrame:CGRectMake(100, 35, 80, 80)];
+        [self addSubview:imageView];
+        UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 115, 160, 50)];
+        [messageLabel setTextAlignment:NSTextAlignmentCenter];
+        [messageLabel setText:message];
+        [messageLabel setBackgroundColor:[UIColor clearColor]];
+        [messageLabel setTextColor:[UIColor whiteColor]];
+        [messageLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
+        [messageLabel setAdjustsFontSizeToFitWidth:YES];
+        [self addSubview:messageLabel];
+        [messageLabel release];
+        [imageView release];
+    }
+    return  self;
 }
 
--(id)initWithMessage:(NSString *)someMessage andAlertImage:(UIImage *)someImage{
-    if(self = [self init]){
-        [messageLabel setText:someMessage];
-        
-        //Main icon of the alert view
-        theImageView=[[UIImageView alloc] initWithImage:someImage];
-        [theImageView setFrame:CGRectMake(50, 20, 80, 80)];
-        [self addSubview:theImageView];
-        [self setContentMode:UIViewContentModeScaleAspectFit];
-  
-        //Type custom has a seconds visible class
-        type=GIDAAlertViewTypeCustom;
-    }
-    return self;
-}
-
--(id)initAlertWithSpinnerAndMessage:(NSString *)someMessage{
-    if(self = [self init]){
-        [messageLabel setText:someMessage];
-        
-        //This GIDAAlertViewType has a spinner
+-(id) initWithSpinnerAndMessage:(NSString *)message {
+    self = [super initWithTitle:@"\n\n\n\n\n" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+    if (self) {
+        withSpinnerOrImage = YES;
         UIActivityIndicatorView *theSpinner=[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        [theSpinner setFrame:CGRectMake(50, 20, 80, 80)];
+        [theSpinner setFrame:CGRectMake(100, 35, 80, 80)];
+        
         [theSpinner startAnimating];
         [self addSubview:theSpinner];
+        UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 115, 160, 50)];
+        [messageLabel setTextAlignment:NSTextAlignmentCenter];
+        [messageLabel setText:message];
+        [messageLabel setBackgroundColor:[UIColor clearColor]];
+        [messageLabel setTextColor:[UIColor whiteColor]];
+        [messageLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
+        [messageLabel setAdjustsFontSizeToFitWidth:YES];
+        [self addSubview:messageLabel];
+        [messageLabel release];
         [theSpinner release];
+    }
+    return self;
+}
+- (id)initWithPrompt:(NSString *)prompt delegate:(id)delegate cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle {
+    while ([prompt sizeWithFont:[UIFont systemFontOfSize:18.0]].width > 240.0) {
+        prompt = [NSString stringWithFormat:@"%@...", [prompt substringToIndex:[prompt length] - 4]];
+    }
+    
+    if (self = [super initWithTitle:prompt message:@"\n" delegate:delegate cancelButtonTitle:cancelTitle otherButtonTitles:acceptTitle, nil]) {
+        withSpinnerOrImage = NO;
+        UITextField *theTextField = [[UITextField alloc] initWithFrame:CGRectMake(12.0, 45.0, 260.0, 31.0)];
+        [theTextField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+        [theTextField setAutocorrectionType:UITextAutocorrectionTypeNo];
+        [theTextField setBorderStyle:UITextBorderStyleRoundedRect];
+        [theTextField setTextAlignment:NSTextAlignmentCenter];
+        [theTextField setKeyboardAppearance:UIKeyboardAppearanceAlert];
+        [self addSubview:theTextField];
+        self.textField = theTextField;
+        [theTextField release];
         
-        //Set the type
-        type=GIDAAlertViewTypeLoading;
+        _alertColor = [UIColor blackColor];
+        
+        // if not >= 4.0
+        NSString *sysVersion = [[UIDevice currentDevice] systemVersion];
+        if (![sysVersion compare:@"4.0" options:NSNumericSearch] == NSOrderedDescending) {
+            CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, 130.0);
+            [self setTransform:translate];
+        }
     }
     return self;
 }
 
--(void)reloadWith:(NSString *)message andImage:(UIImage *)someImage{
-    if (type == GIDAAlertViewTypeCustom) {
-        [messageLabel setText:message];
-        [theImageView setImage:someImage];
-    }
-    else {
-        NSLog(@"GIDAAlertView**:Can't call reloadWith:(NSString *)message andImage:(UIImage *)someImage on GIDAAlertViewTypeLoading");
-    }
-}
 
--(void)presentAlertFor:(float)seconds{
-    //Prevent from calling this method on a different GIDAAlertViewType
-    if (type == GIDAAlertViewTypeCustom && alertIsVisible == NO) {
-        [self addToBottomView:nil];
+- (id)initWithOutTextAreaPrompt:(NSString *)prompt delegate:(id)delegate cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle andTextMessage:(NSString *)textMessage {
+    while ([prompt sizeWithFont:[UIFont systemFontOfSize:18.0]].width > 240.0) {
+        prompt = [NSString stringWithFormat:@"%@...", [prompt substringToIndex:[prompt length] - 4]];
+    }
+    
+    if (self = [super initWithTitle:prompt message:@"\n" delegate:delegate cancelButtonTitle:cancelTitle otherButtonTitles:acceptTitle, nil]) {
+        withSpinnerOrImage = NO;
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(12.0, 45.0, 260.0, 31.0)];
+        [label setBackgroundColor:[UIColor clearColor]];
+        [label setTextColor:[UIColor whiteColor]];
+        [label setTextAlignment:NSTextAlignmentCenter];
+        [label setText:textMessage];
+        [self addSubview:label];
+        theMessage = label;
+        [label release];
         
-        //Update the ivars
-        [self setSecondsVisible:seconds];
-        [self setAlpha:1];
-        alertIsVisible=YES;
+        _alertColor = [UIColor blackColor];
         
-        //We are going to be waiting for a time interval, so in order to avoid blocking the main thread
-        //perform the waiting in another thread
-        [NSThread detachNewThreadSelector:@selector(enterLimbo:) toTarget:self withObject:nil];
+        // if not >= 4.0
+        NSString *sysVersion = [[UIDevice currentDevice] systemVersion];
+        if (![sysVersion compare:@"4.0" options:NSNumericSearch] == NSOrderedDescending) {
+            CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, 130.0);
+            [self setTransform:translate];
+        }
     }
-    else if (type == GIDAAlertViewTypeLoading){
-        NSLog(@"GIDAAlertView**:Can't call presentAlertFor:(float)seconds on GIDAAlertViewTypeLoading");
-    }
+    return self;
 }
 
--(void)presentAlertWithSpinner {
-    //Prevent from calling this method on a different GIDAAlertViewType
-    if (type == GIDAAlertViewTypeLoading && alertIsVisible == NO) {
-        [self addToBottomView:nil];    
-        [self setAlpha:1];
-        alertIsVisible=YES;
-    }
-    else if (type == GIDAAlertViewTypeCustom){
-        NSLog(@"GIDAAlertView**:Can't call presentAlertWithSpinners on GIDAAlertViewTypeCustom");
-    }
+- (void)setColor:(UIColor *)color {
+    _alertColor = [color retain];
 }
 
--(void)hideAlertWithSpinner {
-    //Prevent from calling this method on a different GIDAAlertViewType
-    if (type == GIDAAlertViewTypeLoading && alertIsVisible == YES) {
-        //Hide the view using the alpha
-        [UIView animateWithDuration:kGIDAAlertViewAnimationDuration animations:^{
-                            [self setAlpha:0.0];
-                         }
-                         completion:^(BOOL finished){
-                             if (finished) {
-                                 [self removeFromSuperview];
-                             }                             
-                         }
-         ];
-        
-        //Update the ivars
-        alertIsVisible=NO;
-    }
-    else if (type == GIDAAlertViewTypeCustom){
-        NSLog(@"GIDAAlertView**:Can't call hideAlertWithSpinner on GIDAAlertViewTypeCustom");
-    }
+- (void)show {
+    [textField becomeFirstResponder];
+    [super show];
 }
 
--(void)updateToInterfaceOrientation{
-    UIInterfaceOrientation toInterfaceOrientation=[[UIDevice currentDevice] orientation];
-    
-    //Landscape
-    if (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft || toInterfaceOrientation == UIInterfaceOrientationLandscapeRight) {
-        [self setFrame:[GIDAAlertView rectForInterfaceOrientation:toInterfaceOrientation]];
-    }
-    
-    //Portrait
-    if (toInterfaceOrientation == UIInterfaceOrientationPortrait || toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown ) {
-        [self setFrame:[GIDAAlertView rectForInterfaceOrientation:toInterfaceOrientation]];
-    }
-    
+- (NSString *)enteredText {
+    return textField.text;
 }
 
--(void)dealloc{
-    [messageLabel release];
-    
-    //This property is only allocated when the type is custom
-    if (type == GIDAAlertViewTypeCustom) {
-        [theImageView release];
-    }
-    
+- (void)dealloc {
+    [textField release];
     [super dealloc];
 }
 
-+(void)presentAlertFor:(float)seconds withMessage:(NSString *)message andImage:(UIImage *)image{
-    GIDAAlertView *quickAlert=[[GIDAAlertView alloc] initWithMessage:message andAlertImage:image];
-    [quickAlert presentAlertFor:seconds];
-    [quickAlert release];
+- (void) layoutSubviews {
+	for (UIView *sub in [self subviews])
+	{
+		if([sub class] == [UIImageView class] && sub.tag == 0)
+		{
+			[sub removeFromSuperview];
+			break;
+		}
+	}
 }
 
+- (void)drawRect:(CGRect)rect
+{
+#ifdef DEBUG
+    NSLog(@"%f  %f  %f  %f",rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+#endif
+    if (withSpinnerOrImage) {
+        rect.origin.x = (rect.size.width - 180)/2;
+        rect.size.width = rect.size.height = 180;
+    }
+#ifdef DEBUG
+    NSLog(@"%f  %f  %f  %f",rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+#endif
+    
+	CGContextRef context = UIGraphicsGetCurrentContext();
+    
+	CGContextClearRect(context, rect);
+	CGContextSetAllowsAntialiasing(context, true);
+	CGContextSetLineWidth(context, 0.0);
+	CGContextSetAlpha(context, 0.8);
+	CGContextSetLineWidth(context, 2.0);
+    UIColor *fillColor = _alertColor;
+    UIColor *borderColor = nil;
+    if (withSpinnerOrImage) {
+        borderColor = [UIColor clearColor];
+    } else {
+        borderColor = [UIColor colorWithHue:0.625 saturation:0.0 brightness:0.8 alpha:0.8];
+    }
+    
+	CGContextSetStrokeColorWithColor(context, [borderColor CGColor]);
+	CGContextSetFillColorWithColor(context, [fillColor CGColor]);
+    
+	CGFloat backOffset = 2;
+	CGRect backRect = CGRectMake(rect.origin.x + backOffset,
+                                 rect.origin.y + backOffset,
+                                 rect.size.width - backOffset*2,
+                                 rect.size.height - backOffset*2);
+    
+	[self drawRoundedRect:backRect inContext:context withRadius:8];
+	CGContextDrawPath(context, kCGPathFillStroke);
+    
+	CGRect clipRect = CGRectMake(backRect.origin.x + backOffset-1,
+                                 backRect.origin.y + backOffset-1,
+                                 backRect.size.width - (backOffset-1)*2,
+                                 backRect.size.height - (backOffset-1)*2);
+    
+	[self drawRoundedRect:clipRect inContext:context withRadius:8];
+	CGContextClip (context);
+    
+	CGGradientRef glossGradient;
+	CGColorSpaceRef rgbColorspace;
+	size_t num_locations = 2;
+	CGFloat locations[2] = { 0.0, 1.0 };
+	CGFloat components[8] = { 1.0, 1.0, 1.0, 0.35, 1.0, 1.0, 1.0, 0.06 };
+	rgbColorspace = CGColorSpaceCreateDeviceRGB();
+	glossGradient = CGGradientCreateWithColorComponents(rgbColorspace,
+                                                        components, locations, num_locations);
+    
+	CGRect ovalRect = CGRectMake(-130, -115, (rect.size.width*2),
+                                 rect.size.width/2);
+    
+	CGPoint start = CGPointMake(rect.origin.x, rect.origin.y);
+	CGPoint end = CGPointMake(rect.origin.x, rect.size.height/5);
+    
+	CGContextSetAlpha(context, 0.8);
+	CGContextAddEllipseInRect(context, ovalRect);
+	CGContextClip (context);
+    if (!withSpinnerOrImage) {
+        CGContextDrawLinearGradient(context, glossGradient, start, end, 0);
+    }
+    
+	CGGradientRelease(glossGradient);
+	CGColorSpaceRelease(rgbColorspace);
+}
+
+- (void) drawRoundedRect:(CGRect) rect inContext:(CGContextRef) context
+              withRadius:(CGFloat) radius
+{
+	CGContextBeginPath (context);
+    
+	CGFloat minx = CGRectGetMinX(rect), midx = CGRectGetMidX(rect),
+    maxx = CGRectGetMaxX(rect);
+    
+	CGFloat miny = CGRectGetMinY(rect), midy = CGRectGetMidY(rect),
+    maxy = CGRectGetMaxY(rect);
+    
+	CGContextMoveToPoint(context, minx, midy);
+	CGContextAddArcToPoint(context, minx, miny, midx, miny, radius);
+	CGContextAddArcToPoint(context, maxx, miny, maxx, midy, radius);
+	CGContextAddArcToPoint(context, maxx, maxy, midx, maxy, radius);
+	CGContextAddArcToPoint(context, minx, maxy, minx, midy, radius);
+	CGContextClosePath(context);
+}
+-(void)dismissWithClickedButtonIndex:(NSInteger)buttonIndex animated:(BOOL)animated {
+    [super dismissWithClickedButtonIndex:buttonIndex animated:animated];
+}
+-(void)presentAlertWithSpinnerAndHideAfterSelector:(SEL)selector from:(id)sender withObject:(id)object {
+    [self show];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        [sender performSelector:selector withObject:object];
+        
+        
+        dispatch_async(dispatch_get_main_queue(), ^
+                       {
+                           [self dismissWithClickedButtonIndex:0 animated:YES];
+                       });
+    });
+}
+
+-(void)presentAlertFor:(float)seconds {
+    [self show];
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(seconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [self dismissWithClickedButtonIndex:0 animated:YES];
+    });
+}
+
+- (id)initWithProgressBarAndMessage:(NSString *)message andURL:(NSURL *)url {
+    NSLog(@"GIDAAlertView -(id)initWithProgressBarAndMessage:andURL: NEEDS CONSTRUCTION");
+    return nil;
+}
 @end

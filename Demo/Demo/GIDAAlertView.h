@@ -1,76 +1,38 @@
 //
-//  GIDAAlertView.h
+//  GIDASearchAlert.h 2011/10/28 to 2013/02/27
+//  GIDAAlertView.h since 2013/02/27
+//  TestAlert
 //
-//  Created by Yoshiki Vázquez Baeza on 25/10/11.
-//  Copyright (c) 2011 Polar Bears Nanotechnology Research ©. All rights reserved.
+//  Created by Alejandro Paredes on 10/28/11.
 //
-//  To do:
-//      + Support ARC
-//      + Support iOS 4 and lower
+// Following methods are inspired in Yoshiki Vázquez Baeza work on previous versions
+// of GIDAAlertView.
+// - (id)initWithMessage:(NSString *)someMessage andAlertImage:(UIImage *)someImage;
+// - (id) initWithSpinnerAndMessage:(NSString *)message;
+// - (void)presentAlertFor:(float)seconds;
+// - (void)presentAlertWithSpinnerAndHideAfterSelector:(SEL)selector from:(id)sender;
+//
 
 #import <UIKit/UIKit.h>
-#import <QuartzCore/QuartzCore.h>
 
-#define kGIDAAlertViewAnimationDuration 1
-
-extern CGRect const kiPhonePortraitRect;
-extern CGRect const kiPhoneLandscapeRect;
-extern CGRect const kiPadPortraitRect;
-extern CGRect const kiPadLandscapeRect;
-
-typedef enum {
-    GIDAAlertViewTypeCustom=0,
-    GIDAAlertViewTypeLoading
-}GIDAAlertViewType;
-
-@interface GIDAAlertView : UIView{
-    float secondsVisible;
-    BOOL alertIsVisible;
-    
-    @private
-    UILabel *messageLabel;
-    UIImageView *theImageView;
-    UIImageView *theBackgroundView;
-    
-    @protected
-    GIDAAlertViewType type;
+@interface GIDAAlertView : UIAlertView {
+    UITextField *textField;
 }
 
-@property (nonatomic, assign) float secondsVisible;
-@property (nonatomic, readonly, assign) BOOL alertIsVisible;
+@property (nonatomic, retain) UITextField *textField;
+@property (nonatomic, retain) UILabel     *theMessage;
 
-@property (nonatomic, retain) UILabel *messageLabel;
-@property (nonatomic, retain) UIImageView *theImageView;
-@property (nonatomic, retain) UIImageView *theBackgroundView;
+- (id)initWithMessage:(NSString *)someMessage andAlertImage:(UIImage *)someImage;
+- (id) initWithSpinnerAndMessage:(NSString *)message;
+- (id)initWithPrompt:(NSString *)prompt delegate:(id)delegate cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle;
+- (NSString *) enteredText;
+- (id)initWithOutTextAreaPrompt:(NSString *)prompt delegate:(id)delegate cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle andTextMessage:(NSString *)textMessage;
+- (id)initWithProgressBarAndMessage:(NSString *)message andTime:(NSInteger)seconds;
+- (id)initWithProgressBarAndMessage:(NSString *)message andURL:(NSURL *)url;
 
-@property (nonatomic, assign) GIDAAlertViewType type;
+- (void)setColor:(UIColor *)color;
 
-//Basic constructor
--(id)init;
-
-//**GIDAAlertViewTypeCustom**
-//Simple alert to present a short message to the user aided with an image (80x80 px)
--(id)initWithMessage:(NSString *)someMessage andAlertImage:(UIImage *)someImage;
-
-//When a alert view has already been created and we want to modify it's contents
--(void)reloadWith:(NSString *)message andImage:(UIImage *)someImage;
-
-//Show the view for "seconds", the view will be added to the last view in the hierarchy
--(void)presentAlertFor:(float)seconds;
-
-//**GIDAAlertViewTypeLoading**
-//The common alert known as the "Downloading ..." alert is created with this method, you have
-//to manage when the alert is shown and when you hide it
--(id)initAlertWithSpinnerAndMessage:(NSString *)someMessage;
-
-//Show or hide the view, the view will be added to the last view in the hierarchy
--(void)presentAlertWithSpinner;
--(void)hideAlertWithSpinner;
-
-//Call this method when supporting various interface orientations 
--(void)updateToInterfaceOrientation;
-
-//Class methods, for easy use
-+(void)presentAlertFor:(float)seconds withMessage:(NSString *)message andImage:(UIImage *)image;
-
+- (void)presentProgressBar;
+- (void)presentAlertFor:(float)seconds;
+- (void)presentAlertWithSpinnerAndHideAfterSelector:(SEL)selector from:(id)sender withObject:(id)object;
 @end
