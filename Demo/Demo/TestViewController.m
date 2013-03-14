@@ -56,17 +56,28 @@
 }
 
 -(IBAction)showAlert:(id)sender{
-    if ([segmentedSelector selectedSegmentIndex] == 0) {
-        //Depending on the initialization type, the behavior will be different
-        //customAlert=[[GIDAAlertView alloc] initWithMessage:@"GIDAAlertView Custom" andAlertImage:[UIImage imageNamed:@"noresource.png"]];
-        customAlert = [[GIDAAlertView alloc] initWithProgressBarAndMessage:@"Downloading" andTime:20];
-        [customAlert presentProgressBar];
-       // [customAlert setColor:[UIColor iberoBlueColor]];
-//        [customAlert presentAlertFor:2];
-    }
-    else{
-        spinnerAlert = [[GIDAAlertView alloc] initWithSpinnerAndMessage:@"GIDAAlertView Spinner"];
-        [spinnerAlert presentAlertWithSpinnerAndHideAfterSelector:@selector(wasteTimeMethod) from:self withObject:nil];
+    switch ([segmentedSelector selectedSegmentIndex]) {
+        case 0:
+            customAlert=[[GIDAAlertView alloc] initWithMessage:@"GIDAAlertView Custom" andAlertImage:[UIImage imageNamed:@"noresource.png"]];
+            
+            [customAlert setColor:[UIColor iberoBlueColor]];
+            [customAlert presentAlertFor:2];
+            break;
+        case 1:
+            spinnerAlert = [[GIDAAlertView alloc] initWithSpinnerAndMessage:@"GIDAAlertView Spinner"];
+            [spinnerAlert presentAlertWithSpinnerAndHideAfterSelector:@selector(wasteTimeMethod) from:self withObject:nil];
+            break;
+        case 2:
+            customAlert = [[GIDAAlertView alloc] initWithPrompt:@"Test" delegate:nil cancelButtonTitle:@"Cancel" acceptButtonTitle:@"Accept"];
+            [customAlert show];
+            break;
+        case 3:
+            customAlert = [[GIDAAlertView alloc] initWithProgressBarAndMessage:@"Downloading" andTime:20];
+            [customAlert presentProgressBar];
+            break;
+            
+        default:
+            break;
     }
 }
 
