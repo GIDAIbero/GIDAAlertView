@@ -21,9 +21,15 @@
     float progress;
     NSTimer *timer;
     double timeSeconds;
+    float _receivedDataBytes;
+    float _totalFileSize;
 }
 @property (nonatomic, retain) UIColor *alertColor;
 @property (nonatomic, retain) NSTimer *timer;
+@property (nonatomic, retain) NSMutableData  *responseData;
+@property (nonatomic, retain) NSURL  *userURL;
+@property (nonatomic, retain) NSString *mimeType;
+@property (nonatomic, retain) NSString *textEncoding;
 
 - (void) drawRoundedRect:(CGRect)rrect
                inContext:(CGContextRef)context
@@ -60,6 +66,7 @@
         [self addSubview:messageLabel];
         [messageLabel release];
         [iv release];
+        _responseData = nil;
     }
     return  self;
 }
@@ -102,6 +109,7 @@
         [self addSubview:messageLabel];
         [messageLabel release];
         [imageView release];
+        _responseData = nil;
     }
     return  self;
 }
@@ -125,6 +133,7 @@
         [self addSubview:messageLabel];
         [messageLabel release];
         [theSpinner release];
+        _responseData = nil;
     }
     return self;
 }
@@ -153,6 +162,7 @@
             CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, 130.0);
             [self setTransform:translate];
         }
+        _responseData = nil;
     }
     return self;
 }
@@ -182,8 +192,71 @@
             CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, 130.0);
             [self setTransform:translate];
         }
+        _responseData = nil;
     }
     return self;
+}
+
+-(void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    _totalFileSize = response.expectedContentLength;
+    _responseData = [[NSMutableData alloc] init];
+    _mimeType = [response MIMEType];
+    _textEncoding = [response textEncodingName];
+}
+
+
+-(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    _receivedDataBytes += [data length];
+    progress = _receivedDataBytes / (float)_totalFileSize;
+    [_responseData appendData:data];
+    UIImageView *iv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Bar.png"]];
+    [iv setFrame:CGRectMake(100, 35, 8+progress*80, 80)];
+    [self addSubview:iv];
+    [iv release];
+}
+
+-(void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    double delayInSeconds = 0.7;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        
+        [self dismissWithClickedButtonIndex:0 animated:YES];
+    });
+}
+
+-(void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    NSLog(@"%@",[error description]);
+}
+
+- (id)initWithProgressBarAndMessage:(NSString *)message andURL:(NSURL *)url withDelegate:(id<UIAlertViewDelegate>)delegate {
+    self = [super initWithTitle:@"\n\n\n\n\n" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+    if (self) {
+        [self setDelegate:delegate];
+        _receivedDataBytes = 0;
+        _totalFileSize = 0;
+        progress = -0.1;
+        withSpinnerOrImage = YES;
+        //progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
+        //  [progressView setProgress:0];
+        /*   [self addObserver:self forKeyPath:@"progress" options:NSKeyValueChangeNewKey context:nil];*/
+        //   [progressView setFrame:CGRectMake(100, 35, 80, 80)];
+        UIImageView *iv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Bar.png"]];
+        [iv setFrame:CGRectMake(100, 35, 0, 80)];
+        [self addSubview:iv];
+        //        [self addSubview:progressView];
+        UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 115, 160, 50)];
+        [messageLabel setTextAlignment:NSTextAlignmentCenter];
+        [messageLabel setText:message];
+        [messageLabel setBackgroundColor:[UIColor clearColor]];
+        [messageLabel setTextColor:[UIColor whiteColor]];
+        [messageLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
+        [messageLabel setAdjustsFontSizeToFitWidth:YES];
+        [self addSubview:messageLabel];
+        [messageLabel release];
+        [iv release];
+        _userURL = url;
+    }
+    return  self;
 }
 
 - (void)setColor:(UIColor *)color {
@@ -332,8 +405,15 @@
     });
 }
 
-- (id)initWithProgressBarAndMessage:(NSString *)message andURL:(NSURL *)url {
-    NSLog(@"GIDAAlertView -(id)initWithProgressBarAndMessage:andURL: NEEDS CONSTRUCTION");
-    return nil;
+-(NSDictionary *)getDownloadedData {
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:_responseData,@"data",_mimeType,@"mime", _userURL, @"url", _textEncoding, @"encoding", nil];
+    return dictionary;
+}
+-(void)progresBarStartDownload {
+    [self show];
+    NSURLRequest *request = [NSURLRequest requestWithURL:_userURL];
+    NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
+    [connection start];
+    
 }
 @end

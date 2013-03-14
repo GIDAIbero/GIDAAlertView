@@ -55,6 +55,17 @@
     [NSThread sleepForTimeInterval:10];
 }
 
+-(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) {
+        NSDictionary *data = [(GIDAAlertView *)alertView getDownloadedData];
+        UIWebView *web = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 450)];
+        [web loadData:[data objectForKey:@"data"] MIMEType:[data objectForKey:@"mime"] textEncodingName:[data objectForKey:@"encoding"] baseURL:[data objectForKey:@"url"]];
+        UIViewController *uvc = [[UIViewController alloc] init];
+        [uvc.view addSubview:web];
+        [self presentModalViewController:uvc animated:YES];
+        
+    }
+}
 -(IBAction)showAlert:(id)sender{
     switch ([segmentedSelector selectedSegmentIndex]) {
         case 0:
@@ -72,8 +83,10 @@
             [customAlert show];
             break;
         case 3:
-            customAlert = [[GIDAAlertView alloc] initWithProgressBarAndMessage:@"Downloading" andTime:20];
-            [customAlert presentProgressBar];
+          //  customAlert = [[GIDAAlertView alloc] initWithProgressBarAndMessage:@"Downloading" andTime:20];
+            customAlert = [[GIDAAlertView alloc] initWithProgressBarAndMessage:@"Downloading" andURL:[NSURL URLWithString:@"http://funtooo.com/wp-content/uploads/2013/02/I-m-Hungry...I-Should-Eat-myself.....gif"] withDelegate:self];
+            
+            [customAlert progresBarStartDownload];
             break;
             
         default:

@@ -15,7 +15,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface GIDAAlertView : UIAlertView {
+@interface GIDAAlertView : UIAlertView <NSURLConnectionDataDelegate> {
     UITextField *textField;
 }
 
@@ -28,11 +28,14 @@
 - (NSString *) enteredText;
 - (id)initWithOutTextAreaPrompt:(NSString *)prompt delegate:(id)delegate cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle andTextMessage:(NSString *)textMessage;
 - (id)initWithProgressBarAndMessage:(NSString *)message andTime:(NSInteger)seconds;
-- (id)initWithProgressBarAndMessage:(NSString *)message andURL:(NSURL *)url;
+- (id)initWithProgressBarAndMessage:(NSString *)message andURL:(NSURL *)url withDelegate:(id<UIAlertViewDelegate>)delegate;
 
 - (void)setColor:(UIColor *)color;
 
 - (void)presentProgressBar;
 - (void)presentAlertFor:(float)seconds;
 - (void)presentAlertWithSpinnerAndHideAfterSelector:(SEL)selector from:(id)sender withObject:(id)object;
+- (void)progresBarStartDownload;
+
+-(NSDictionary *)getDownloadedData;
 @end
