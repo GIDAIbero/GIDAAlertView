@@ -15,6 +15,90 @@
 
 #import "GIDAAlertView.h"
 
+@implementation ProgressBar
+- (void) drawRoundedRect:(CGRect)rect inContext:(CGContextRef)context withRadius:(CGFloat)radius{
+	CGContextBeginPath (context);
+    
+	CGFloat minx = CGRectGetMinX(rect), midx = CGRectGetMidX(rect),
+    maxx = CGRectGetMaxX(rect);
+    
+	CGFloat miny = CGRectGetMinY(rect), midy = CGRectGetMidY(rect),
+    maxy = CGRectGetMaxY(rect);
+    
+	CGContextMoveToPoint(context, minx, midy);
+	CGContextAddArcToPoint(context, minx, miny, midx, miny, radius);
+	CGContextAddArcToPoint(context, maxx, miny, maxx, midy, radius);
+	CGContextAddArcToPoint(context, maxx, maxy, midx, maxy, radius);
+	CGContextAddArcToPoint(context, minx, maxy, minx, midy, radius);
+	CGContextClosePath(context);
+}
+-(id)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self setBackgroundColor:[UIColor clearColor]];
+        _color = [UIColor blueColor];
+    }
+    return self;
+}
+-(void)drawRect:(CGRect)rect {
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+	CGContextClearRect(context, rect);
+	CGContextSetAllowsAntialiasing(context, true);
+	CGContextSetLineWidth(context, 0.0);
+	CGContextSetAlpha(context, 0.8);
+	CGContextSetLineWidth(context, 2.0);
+    UIColor *fillColor = _color;
+    UIColor *borderColor = [UIColor clearColor];
+	CGContextSetStrokeColorWithColor(context, [borderColor CGColor]);
+	CGContextSetFillColorWithColor(context, [fillColor CGColor]);
+    
+	CGFloat backOffset = 2;
+	CGRect backRect = CGRectMake(rect.origin.x + backOffset,
+                                 rect.origin.y + backOffset,
+                                 rect.size.width - backOffset*2,
+                                 rect.size.height - backOffset*2);
+    int radius = 8;
+    if (rect.size.width < 21) {
+        radius = rect.size.width/3;
+    }
+	[self drawRoundedRect:backRect inContext:context withRadius:radius];
+	CGContextDrawPath(context, kCGPathFillStroke);
+    
+	CGRect clipRect = CGRectMake(backRect.origin.x + backOffset-1,
+                                 backRect.origin.y + backOffset-1,
+                                 backRect.size.width - (backOffset-1)*2,
+                                 backRect.size.height - (backOffset-1)*2);
+    
+	[self drawRoundedRect:clipRect inContext:context withRadius:radius];
+	CGContextClip (context);
+    
+	CGGradientRef glossGradient;
+	CGColorSpaceRef rgbColorspace;
+	size_t num_locations = 2;
+	CGFloat locations[2] = { 0.0, 1.0 };
+	CGFloat components[8] = { 1.0, 1.0, 1.0, 0.35, 1.0, 1.0, 1.0, 0.06 };
+	rgbColorspace = CGColorSpaceCreateDeviceRGB();
+	glossGradient = CGGradientCreateWithColorComponents(rgbColorspace,
+                                                        components, locations, num_locations);
+    
+	CGRect ovalRect = CGRectMake(-130, -115, (rect.size.width*2),
+                                 rect.size.width/2);
+    
+	CGPoint start = CGPointMake(rect.origin.x, rect.origin.y);
+	CGPoint end = CGPointMake(rect.origin.x, rect.size.height/5);
+    
+	CGContextSetAlpha(context, 0.8);
+	CGContextAddEllipseInRect(context, ovalRect);
+	CGContextClip (context);
+    
+    CGContextDrawLinearGradient(context, glossGradient, start, end, 0);
+    
+	CGGradientRelease(glossGradient);
+	CGColorSpaceRelease(rgbColorspace);
+}
+@end
+
 @interface GIDAAlertView() {
     BOOL withSpinnerOrImage;
     float progress;
@@ -24,16 +108,19 @@
     float _totalFileSize;
     GIDAAlertViewType alertType;
     BOOL acceptedAlert;
+    BOOL failedDownload;
 }
 
-@property (nonatomic, retain) UITextField *textField;
-@property (nonatomic, retain) UILabel     *theMessage;
-@property (nonatomic, retain) UIColor *alertColor;
-@property (nonatomic, retain) NSTimer *timer;
-@property (nonatomic, retain) NSMutableData  *responseData;
-@property (nonatomic, retain) NSURL  *userURL;
-@property (nonatomic, retain) NSString *mimeType;
-@property (nonatomic, retain) NSString *textEncoding;
+@property (nonatomic, retain) UITextField   *textField;
+@property (nonatomic, retain) UILabel       *theMessage;
+@property (nonatomic, retain) UIColor       *alertColor;
+@property (nonatomic, retain) NSTimer       *timer;
+@property (nonatomic, retain) NSMutableData *responseData;
+@property (nonatomic, retain) NSURL         *userURL;
+@property (nonatomic, retain) NSString      *mimeType;
+@property (nonatomic, retain) NSString      *textEncoding;
+@property (nonatomic, retain) ProgressBar   *progressBar;
+@property (nonatomic, retain) UILabel       *progressLabel;
 
 - (void) drawRoundedRect:(CGRect)rrect
                inContext:(CGContextRef)context
@@ -80,9 +167,11 @@
         progress = -0.1;
         timeSeconds = seconds/10;
         withSpinnerOrImage = YES;
-          UIImageView *iv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Bar.png"]];
-        [iv setFrame:CGRectMake(100, 35, 0, 80)];
-        [self addSubview:iv];
+       //   UIImageView *iv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Bar.png"]];
+        //ProgressBar *iv = ;
+        _progressBar = [[ProgressBar alloc] initWithFrame:CGRectMake(100, 35, 0, 80)];
+       // [iv setFrame:];
+        [self addSubview:_progressBar];
         UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 115, 160, 50)];
         [messageLabel setTextAlignment:NSTextAlignmentCenter];
         [messageLabel setText:message];
@@ -92,7 +181,7 @@
         [messageLabel setAdjustsFontSizeToFitWidth:YES];
         [self addSubview:messageLabel];
         [messageLabel release];
-        [iv release];
+        //[iv release];
         _responseData = nil;
         alertType = GIDAAlertViewProgressTime;
     }
@@ -112,7 +201,7 @@
 #endif
         [_timer invalidate];
         _timer = nil;
-        [self dismissWithClickedButtonIndex:0 animated:YES];
+        [self dismissWithClickedButtonIndex:0 animated:NO];
     }
 }
 -(void)presentProgressBar {
@@ -219,23 +308,39 @@
     _receivedDataBytes += [data length];
     progress = _receivedDataBytes / (float)_totalFileSize;
     [_responseData appendData:data];
-    UIImageView *iv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Bar.png"]];
-    [iv setFrame:CGRectMake(100, 35, 8+progress*80, 80)];
-    [self addSubview:iv];
-    [iv release];
+    
+    [_progressBar removeFromSuperview];
+    _progressBar = [[ProgressBar alloc] initWithFrame:CGRectMake(100, 35, 8+progress*80, 80)];
+    [_progressBar setColor:_progressBarColor];
+    [self addSubview:_progressBar];
+    
+    if (progress < 1) {
+        NSString *string = [NSString stringWithFormat:@"%.1f%@",progress*100,@"%"];
+        [_progressLabel setText:string];
+    } else {
+        [_progressLabel setText:@"100%"];
+    }
+    [self bringSubviewToFront:_progressLabel];
 }
 
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection {
     double delayInSeconds = 0.7;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        
-        [self dismissWithClickedButtonIndex:0 animated:YES];
+        [self dismissWithClickedButtonIndex:0 animated:NO];
     });
 }
 
 -(void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     NSLog(@"%@",[error description]);
+    
+    double delayInSeconds = 0.5;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        _responseData = nil;
+        failedDownload = YES;
+        [self dismissWithClickedButtonIndex:0 animated:NO];
+    });
 }
 
 - (id)initWithProgressBarAndMessage:(NSString *)message andURL:(NSURL *)url {
@@ -245,10 +350,15 @@
         _totalFileSize = 0;
         progress = -0.1;
         withSpinnerOrImage = YES;
-        UIImageView *iv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Bar.png"]];
-        [iv setFrame:CGRectMake(100, 35, 0, 80)];
-        [self addSubview:iv];
-        //        [self addSubview:progressView];
+        _progressBar = [[ProgressBar alloc] initWithFrame:CGRectMake(100, 35, 0, 80)];
+        [self addSubview:_progressBar];
+        _progressLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 50, 60, 50)];
+        [_progressLabel setTextAlignment:UITextAlignmentCenter];
+        _progressLabel.baselineAdjustment = UIBaselineAdjustmentAlignCenters;
+        [_progressLabel setTextColor:[UIColor whiteColor]];
+        [_progressLabel setBackgroundColor:[UIColor clearColor]];
+        [_progressLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
+        [self addSubview:_progressLabel];
         UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 115, 160, 50)];
         [messageLabel setTextAlignment:NSTextAlignmentCenter];
         [messageLabel setText:message];
@@ -258,7 +368,9 @@
         [messageLabel setAdjustsFontSizeToFitWidth:YES];
         [self addSubview:messageLabel];
         [messageLabel release];
-        [iv release];
+        failedDownload = NO;
+        _responseData = nil;
+        //[iv release];
         _userURL = url;
         alertType = GIDAAlertViewProgressURL;
     }
@@ -399,10 +511,7 @@
 -(void)presentAlertWithSpinnerAndHideAfterSelector:(SEL)selector from:(id)sender withObject:(id)object {
     [self show];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        
         [sender performSelector:selector withObject:object];
-        
-        
         dispatch_async(dispatch_get_main_queue(), ^
                        {
                            [self dismissWithClickedButtonIndex:0 animated:YES];
@@ -419,7 +528,12 @@
 }
 
 -(NSDictionary *)getDownloadedData {
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:_responseData,@"data",_mimeType,@"mime", _userURL, @"url", _textEncoding, @"encoding", nil];
+    NSDictionary *dictionary;
+    if (failedDownload) {
+        dictionary = nil;
+    } else {
+        dictionary = [NSDictionary dictionaryWithObjectsAndKeys:_responseData,@"data",_mimeType,@"mime", _userURL, @"url", _textEncoding, @"encoding", nil];
+    } 
     return dictionary;
 }
 -(void)progresBarStartDownload {

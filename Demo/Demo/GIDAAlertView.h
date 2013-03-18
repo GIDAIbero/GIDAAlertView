@@ -23,6 +23,10 @@ typedef enum {
     GIDAAlertViewProgressURL    = 5
 }GIDAAlertViewType;
 
+@interface ProgressBar : UIView
+@property (strong) UIColor *color;
+@end
+
 @class GIDAAlertView;
 @protocol GIDAAlertViewDelegate <NSObject>
 @optional
@@ -33,6 +37,7 @@ typedef enum {
 
 @interface GIDAAlertView : UIAlertView <NSURLConnectionDataDelegate, UIAlertViewDelegate>
 @property (nonatomic, retain) NSString *identifier;
+@property (nonatomic, retain) UIColor *progressBarColor;
 @property (readonly) GIDAAlertViewType type;
 @property (readonly) BOOL accepted;
 @property (nonatomic, retain) id <GIDAAlertViewDelegate> gavdelegate;
