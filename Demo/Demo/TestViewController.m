@@ -40,14 +40,16 @@
     if (self) {
         // Custom initialization, one of each type
         customAlert  = nil;
-        spinnerAlert = nil;
     }
     return self;
 }
 
 - (void)dealloc{
     [segmentedSelector release];
-    [spinnerAlert release];
+    
+    if (customAlert) {
+        [customAlert release];
+    }
     
     [super dealloc];
 }
@@ -55,42 +57,51 @@
     [NSThread sleepForTimeInterval:10];
 }
 
--(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 0) {
-        NSDictionary *data = [(GIDAAlertView *)alertView getDownloadedData];
-        UIWebView *web = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 450)];
-        [web loadData:[data objectForKey:@"data"] MIMEType:[data objectForKey:@"mime"] textEncodingName:[data objectForKey:@"encoding"] baseURL:[data objectForKey:@"url"]];
-        UIViewController *uvc = [[UIViewController alloc] init];
-        [uvc.view addSubview:web];
-        [self presentModalViewController:uvc animated:YES];
-        
-    }
+-(void)alertFinished:(GIDAAlertView *)alertView {
+        if ([(GIDAAlertView *)alertView type] == GIDAAlertViewProgressURL) {
+            NSDictionary *data = [(GIDAAlertView *)alertView getDownloadedData];
+
+            UIWebView *web = [[UIWebView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
+            [web loadData:[data objectForKey:@"data"] MIMEType:[data objectForKey:@"mime"] textEncodingName:[data objectForKey:@"encoding"] baseURL:[data objectForKey:@"url"]];
+            UIViewController *uvc = [[UIViewController alloc] init];
+            [uvc.view addSubview:web];
+            [self presentModalViewController:uvc animated:YES];
+        }
 }
 -(IBAction)showAlert:(id)sender{
+    NSURL *url = nil;
     switch ([segmentedSelector selectedSegmentIndex]) {
         case 0:
             customAlert=[[GIDAAlertView alloc] initWithMessage:@"GIDAAlertView Custom" andAlertImage:[UIImage imageNamed:@"noresource.png"]];
-            
             [customAlert setColor:[UIColor iberoBlueColor]];
             [customAlert presentAlertFor:2];
             break;
         case 1:
-            spinnerAlert = [[GIDAAlertView alloc] initWithSpinnerAndMessage:@"GIDAAlertView Spinner"];
-            [spinnerAlert presentAlertWithSpinnerAndHideAfterSelector:@selector(wasteTimeMethod) from:self withObject:nil];
+            customAlert = [[GIDAAlertView alloc] initWithSpinnerAndMessage:@"GIDAAlertView Spinner"];
+            [customAlert setColor:[UIColor iberoBlueColor]];
+            [customAlert presentAlertWithSpinnerAndHideAfterSelector:@selector(wasteTimeMethod) from:self withObject:nil];
             break;
         case 2:
-            customAlert = [[GIDAAlertView alloc] initWithPrompt:@"Test" delegate:nil cancelButtonTitle:@"Cancel" acceptButtonTitle:@"Accept"];
+            customAlert = [[GIDAAlertView alloc] initWithPrompt:@"Test"
+                                              cancelButtonTitle:@"Cancel"
+                                              acceptButtonTitle:@"Accept"];
+            [customAlert setColor:[UIColor iberoBlueColor]];
             [customAlert show];
             break;
         case 3:
-          //  customAlert = [[GIDAAlertView alloc] initWithProgressBarAndMessage:@"Downloading" andTime:20];
-            customAlert = [[GIDAAlertView alloc] initWithProgressBarAndMessage:@"Downloading" andURL:[NSURL URLWithString:@"http://funtooo.com/wp-content/uploads/2013/02/I-m-Hungry...I-Should-Eat-myself.....gif"] withDelegate:self];
-            
+            url = [NSURL URLWithString:@"http://funtooo.com/wp-content/uploads/2013/02/I-m-Hungry...I-Should-Eat-myself.....gif"];
+            customAlert = [[GIDAAlertView alloc] initWithProgressBarAndMessage:@"Downloading"
+                                                                        andURL:url];
+            [customAlert setDelegate:self];
+            [customAlert setColor:[UIColor iberoBlueColor]];
             [customAlert progresBarStartDownload];
             break;
-            
         default:
             break;
+    }
+    if (customAlert) {
+        [customAlert release];
+        customAlert = nil;
     }
 }
 

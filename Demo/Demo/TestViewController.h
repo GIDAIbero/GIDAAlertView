@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "GIDAAlertView.h"
 
-@interface TestViewController : UIViewController <UIAlertViewDelegate> {
+@interface TestViewController : UIViewController <GIDAAlertViewDelegate> {
     UISegmentedControl *segmentedSelector;
     
     @private
