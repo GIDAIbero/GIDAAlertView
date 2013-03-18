@@ -17,13 +17,17 @@
 
 @interface GIDAAlertView() {
     BOOL withSpinnerOrImage;
-    UIProgressView *progressView;
     float progress;
     NSTimer *timer;
     double timeSeconds;
     float _receivedDataBytes;
     float _totalFileSize;
+    GIDAAlertViewType alertType;
+    BOOL acceptedAlert;
 }
+
+@property (nonatomic, retain) UITextField *textField;
+@property (nonatomic, retain) UILabel     *theMessage;
 @property (nonatomic, retain) UIColor *alertColor;
 @property (nonatomic, retain) NSTimer *timer;
 @property (nonatomic, retain) NSMutableData  *responseData;
@@ -42,20 +46,43 @@
 @synthesize theMessage;
 @synthesize timer = _timer;
 
--(id)initWithProgressBarAndMessage:(NSString *)message andTime:(NSInteger)seconds {
+-(GIDAAlertViewType)type {
+    return alertType;
+}
+
+-(id)initWithMessage:(NSString *)message andAlertImage:(UIImage *)image {
     self = [super initWithTitle:@"\n\n\n\n\n" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+    if (self) {
+        withSpinnerOrImage = YES;
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+        [imageView setFrame:CGRectMake(100, 35, 80, 80)];
+        [self addSubview:imageView];
+        UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 115, 160, 50)];
+        [messageLabel setTextAlignment:NSTextAlignmentCenter];
+        [messageLabel setText:message];
+        [messageLabel setBackgroundColor:[UIColor clearColor]];
+        [messageLabel setTextColor:[UIColor whiteColor]];
+        [messageLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
+        [messageLabel setAdjustsFontSizeToFitWidth:YES];
+        [self addSubview:messageLabel];
+        [messageLabel release];
+        [imageView release];
+        _responseData = nil;
+        alertType = GIDAAlertViewMessageImage;
+    }
+    return  self;
+}
+
+
+-(id)initWithProgressBarAndMessage:(NSString *)message andTime:(NSInteger)seconds {
+    self = [super initWithTitle:@"\n\n\n\n\n" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:nil];
     if (self) {
         progress = -0.1;
         timeSeconds = seconds/10;
         withSpinnerOrImage = YES;
-        //progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
-        //  [progressView setProgress:0];
-        /*   [self addObserver:self forKeyPath:@"progress" options:NSKeyValueChangeNewKey context:nil];*/
-        //   [progressView setFrame:CGRectMake(100, 35, 80, 80)];
-        UIImageView *iv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Bar.png"]];
+          UIImageView *iv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Bar.png"]];
         [iv setFrame:CGRectMake(100, 35, 0, 80)];
         [self addSubview:iv];
-        //        [self addSubview:progressView];
         UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 115, 160, 50)];
         [messageLabel setTextAlignment:NSTextAlignmentCenter];
         [messageLabel setText:message];
@@ -67,6 +94,7 @@
         [messageLabel release];
         [iv release];
         _responseData = nil;
+        alertType = GIDAAlertViewProgressTime;
     }
     return  self;
 }
@@ -92,27 +120,6 @@
     _timer = [NSTimer timerWithTimeInterval:timeSeconds target:self selector:@selector(moveProgress) userInfo:nil repeats:YES];
     [[NSRunLoop mainRunLoop] addTimer:_timer forMode:NSDefaultRunLoopMode];
 }
--(id)initWithMessage:(NSString *)message andAlertImage:(UIImage *)image {
-    self = [super initWithTitle:@"\n\n\n\n\n" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
-    if (self) {
-        withSpinnerOrImage = YES;
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-        [imageView setFrame:CGRectMake(100, 35, 80, 80)];
-        [self addSubview:imageView];
-        UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 115, 160, 50)];
-        [messageLabel setTextAlignment:NSTextAlignmentCenter];
-        [messageLabel setText:message];
-        [messageLabel setBackgroundColor:[UIColor clearColor]];
-        [messageLabel setTextColor:[UIColor whiteColor]];
-        [messageLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
-        [messageLabel setAdjustsFontSizeToFitWidth:YES];
-        [self addSubview:messageLabel];
-        [messageLabel release];
-        [imageView release];
-        _responseData = nil;
-    }
-    return  self;
-}
 
 -(id) initWithSpinnerAndMessage:(NSString *)message {
     self = [super initWithTitle:@"\n\n\n\n\n" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
@@ -134,15 +141,16 @@
         [messageLabel release];
         [theSpinner release];
         _responseData = nil;
+        alertType = GIDAAlertViewSpinner;
     }
     return self;
 }
-- (id)initWithPrompt:(NSString *)prompt delegate:(id)delegate cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle {
+- (id)initWithPrompt:(NSString *)prompt cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle {
     while ([prompt sizeWithFont:[UIFont systemFontOfSize:18.0]].width > 240.0) {
         prompt = [NSString stringWithFormat:@"%@...", [prompt substringToIndex:[prompt length] - 4]];
     }
     
-    if (self = [super initWithTitle:prompt message:@"\n" delegate:delegate cancelButtonTitle:cancelTitle otherButtonTitles:acceptTitle, nil]) {
+    if (self = [super initWithTitle:prompt message:@"\n" delegate:nil cancelButtonTitle:cancelTitle otherButtonTitles:acceptTitle, nil]) {
         withSpinnerOrImage = NO;
         UITextField *theTextField = [[UITextField alloc] initWithFrame:CGRectMake(12.0, 45.0, 260.0, 31.0)];
         [theTextField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
@@ -163,23 +171,24 @@
             [self setTransform:translate];
         }
         _responseData = nil;
+        alertType = GIDAAlertViewPrompt;
     }
     return self;
 }
 
 
-- (id)initWithOutTextAreaPrompt:(NSString *)prompt delegate:(id)delegate cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle andTextMessage:(NSString *)textMessage {
-    while ([prompt sizeWithFont:[UIFont systemFontOfSize:18.0]].width > 240.0) {
-        prompt = [NSString stringWithFormat:@"%@...", [prompt substringToIndex:[prompt length] - 4]];
+-(id)initWithTitle:(NSString *)title cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle andMessage:(NSString *)message {
+    while ([title sizeWithFont:[UIFont systemFontOfSize:18.0]].width > 240.0) {
+        title = [NSString stringWithFormat:@"%@...", [title substringToIndex:[title length] - 4]];
     }
     
-    if (self = [super initWithTitle:prompt message:@"\n" delegate:delegate cancelButtonTitle:cancelTitle otherButtonTitles:acceptTitle, nil]) {
+    if (self = [super initWithTitle:title message:@"\n" delegate:self cancelButtonTitle:cancelTitle otherButtonTitles:acceptTitle, nil]) {
         withSpinnerOrImage = NO;
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(12.0, 45.0, 260.0, 31.0)];
         [label setBackgroundColor:[UIColor clearColor]];
         [label setTextColor:[UIColor whiteColor]];
         [label setTextAlignment:NSTextAlignmentCenter];
-        [label setText:textMessage];
+        [label setText:message];
         [self addSubview:label];
         theMessage = label;
         [label release];
@@ -193,6 +202,7 @@
             [self setTransform:translate];
         }
         _responseData = nil;
+        alertType = GIDAAlertViewNoPrompt;
     }
     return self;
 }
@@ -228,18 +238,13 @@
     NSLog(@"%@",[error description]);
 }
 
-- (id)initWithProgressBarAndMessage:(NSString *)message andURL:(NSURL *)url withDelegate:(id<UIAlertViewDelegate>)delegate {
+- (id)initWithProgressBarAndMessage:(NSString *)message andURL:(NSURL *)url {
     self = [super initWithTitle:@"\n\n\n\n\n" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
     if (self) {
-        [self setDelegate:delegate];
         _receivedDataBytes = 0;
         _totalFileSize = 0;
         progress = -0.1;
         withSpinnerOrImage = YES;
-        //progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
-        //  [progressView setProgress:0];
-        /*   [self addObserver:self forKeyPath:@"progress" options:NSKeyValueChangeNewKey context:nil];*/
-        //   [progressView setFrame:CGRectMake(100, 35, 80, 80)];
         UIImageView *iv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Bar.png"]];
         [iv setFrame:CGRectMake(100, 35, 0, 80)];
         [self addSubview:iv];
@@ -255,6 +260,7 @@
         [messageLabel release];
         [iv release];
         _userURL = url;
+        alertType = GIDAAlertViewProgressURL;
     }
     return  self;
 }
@@ -270,6 +276,9 @@
 
 - (NSString *)enteredText {
     return textField.text;
+}
+- (NSString *)message {
+    return [[self theMessage] text];
 }
 
 - (void)dealloc {
@@ -383,6 +392,10 @@
 -(void)dismissWithClickedButtonIndex:(NSInteger)buttonIndex animated:(BOOL)animated {
     [super dismissWithClickedButtonIndex:buttonIndex animated:animated];
 }
+-(void)setDelegate:(id)delegate {
+    [super setDelegate:self];
+    _gavdelegate = delegate;
+}
 -(void)presentAlertWithSpinnerAndHideAfterSelector:(SEL)selector from:(id)sender withObject:(id)object {
     [self show];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -415,5 +428,30 @@
     NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
     [connection start];
     
+}
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (buttonIndex == 1) {
+        acceptedAlert = YES;
+    } else {
+        acceptedAlert = NO;
+    }
+    if ([_gavdelegate respondsToSelector:@selector(alertOnClicked:)])
+        [_gavdelegate alertOnClicked:(GIDAAlertView *)alertView];
+}
+-(BOOL)accepted {
+    return acceptedAlert;
+}
+-(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        acceptedAlert = YES;
+    } else {
+        acceptedAlert = NO;
+    }
+    if([_gavdelegate respondsToSelector:@selector(alertOnDismiss:)])
+        [_gavdelegate alertOnDismiss:(GIDAAlertView *)alertView];
+    if ([_gavdelegate respondsToSelector:@selector(alertFinished:)]) 
+        [_gavdelegate alertFinished:(GIDAAlertView *)alertView];
 }
 @end

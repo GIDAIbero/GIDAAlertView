@@ -14,24 +14,39 @@
 //
 
 #import <UIKit/UIKit.h>
+typedef enum {
+    GIDAAlertViewMessageImage   = 0,
+    GIDAAlertViewSpinner        = 1,
+    GIDAAlertViewPrompt         = 2,
+    GIDAAlertViewNoPrompt       = 3,
+    GIDAAlertViewProgressTime   = 4,
+    GIDAAlertViewProgressURL    = 5
+}GIDAAlertViewType;
 
-@interface GIDAAlertView : UIAlertView <NSURLConnectionDataDelegate> {
-    UITextField *textField;
-}
+@class GIDAAlertView;
+@protocol GIDAAlertViewDelegate <NSObject>
+@optional
+-(void)alertOnClicked:(GIDAAlertView *)alertView;
+-(void)alertOnDismiss:(GIDAAlertView *)alertView;
+-(void)alertFinished:(GIDAAlertView *)alertView;
+@end
 
-@property (nonatomic, retain) UITextField *textField;
-@property (nonatomic, retain) UILabel     *theMessage;
+@interface GIDAAlertView : UIAlertView <NSURLConnectionDataDelegate, UIAlertViewDelegate>
+@property (nonatomic, retain) NSString *identifier;
+@property (readonly) GIDAAlertViewType type;
+@property (readonly) BOOL accepted;
+@property (nonatomic, retain) id <GIDAAlertViewDelegate> gavdelegate;
 
 - (id)initWithMessage:(NSString *)someMessage andAlertImage:(UIImage *)someImage;
 - (id) initWithSpinnerAndMessage:(NSString *)message;
-- (id)initWithPrompt:(NSString *)prompt delegate:(id)delegate cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle;
-- (NSString *) enteredText;
-- (id)initWithOutTextAreaPrompt:(NSString *)prompt delegate:(id)delegate cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle andTextMessage:(NSString *)textMessage;
+- (id)initWithPrompt:(NSString *)prompt cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle;
+- (id)initWithTitle:(NSString *)title cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle andMessage:(NSString *)message;
 - (id)initWithProgressBarAndMessage:(NSString *)message andTime:(NSInteger)seconds;
-- (id)initWithProgressBarAndMessage:(NSString *)message andURL:(NSURL *)url withDelegate:(id<UIAlertViewDelegate>)delegate;
+- (id)initWithProgressBarAndMessage:(NSString *)message andURL:(NSURL *)url;
 
 - (void)setColor:(UIColor *)color;
-
+- (NSString *) enteredText;
+- (NSString *) message;
 - (void)presentProgressBar;
 - (void)presentAlertFor:(float)seconds;
 - (void)presentAlertWithSpinnerAndHideAfterSelector:(SEL)selector from:(id)sender withObject:(id)object;
