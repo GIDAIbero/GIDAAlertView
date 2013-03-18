@@ -58,15 +58,24 @@
 }
 
 -(void)alertFinished:(GIDAAlertView *)alertView {
-        if ([(GIDAAlertView *)alertView type] == GIDAAlertViewProgressURL) {
-            NSDictionary *data = [(GIDAAlertView *)alertView getDownloadedData];
-
+    if ([alertView type] == GIDAAlertViewProgressURL) {
+        NSDictionary *data = [alertView getDownloadedData];
+        if (data) {
             UIWebView *web = [[UIWebView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
-            [web loadData:[data objectForKey:@"data"] MIMEType:[data objectForKey:@"mime"] textEncodingName:[data objectForKey:@"encoding"] baseURL:[data objectForKey:@"url"]];
+            [web loadData:[data objectForKey:@"data"]
+                 MIMEType:[data objectForKey:@"mime"]
+         textEncodingName:[data objectForKey:@"encoding"]
+                  baseURL:[data objectForKey:@"url"]];
             UIViewController *uvc = [[UIViewController alloc] init];
             [uvc.view addSubview:web];
             [self presentModalViewController:uvc animated:YES];
+        } else {
+            customAlert = [[GIDAAlertView alloc] initWithMessage:@"Connection failed"
+                                                   andAlertImage:[UIImage imageNamed:@"noresource.png"]];
+            [customAlert presentAlertFor:2];
+            [customAlert release];
         }
+    }
 }
 -(IBAction)showAlert:(id)sender{
     NSURL *url = nil;
@@ -93,16 +102,16 @@
             customAlert = [[GIDAAlertView alloc] initWithProgressBarAndMessage:@"Downloading"
                                                                         andURL:url];
             [customAlert setDelegate:self];
-            [customAlert setColor:[UIColor iberoBlueColor]];
+            [customAlert setProgressBarColor:[UIColor iberoRedColor]];
             [customAlert progresBarStartDownload];
             break;
         default:
             break;
     }
-    if (customAlert) {
+  /*  if (customAlert) {
         [customAlert release];
         customAlert = nil;
-    }
+    }*/
 }
 
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation{
