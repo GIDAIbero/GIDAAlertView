@@ -230,7 +230,7 @@
     while ([prompt sizeWithFont:[UIFont systemFontOfSize:18.0] constrainedToSize:CGSizeMake(240, 1000)].width > 240.0) {
         prompt = [NSString stringWithFormat:@"%@...", [prompt substringToIndex:[prompt length] - 4]];
     }
-    NSString *heightString = @"";
+    NSString *heightString = @"\n";
     CGFloat height = [prompt sizeWithFont:[UIFont systemFontOfSize:18.0] constrainedToSize:CGSizeMake(240, 1000) lineBreakMode:UILineBreakModeWordWrap].height;
     for (int i = 0; i < height; i+=22) {
         heightString = [heightString stringByAppendingString:@"\n"];
@@ -278,6 +278,11 @@
     }
     if (self = [super initWithTitle:prompt message:height delegate:nil cancelButtonTitle:cancelTitle otherButtonTitles:acceptTitle, nil]) {
         withSpinnerOrImage = NO;
+        _backgroundView = [[UIView alloc] initWithFrame:CGRectMake(40, -10, 200, 200)];
+        [_backgroundView setBackgroundColor:[UIColor blackColor]];
+        [_backgroundView setAlpha:0.8];
+        _backgroundView.layer.cornerRadius = 15;
+        [self addSubview:_backgroundView];
         UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
         CGSize imageSize = image.size;
         CGRect imageViewFrame = CGRectMake((280-imageSize.width)/2, 20.0f, imageSize.width, imageSize.height);
@@ -307,6 +312,19 @@
     }
     return self;
 }
+-(id)initWithTitle:(NSString *)title message:(NSString *)message delegate:(id)delegate cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
+    self = [super initWithTitle:title message:message delegate:delegate cancelButtonTitle:cancelButtonTitle otherButtonTitles:nil];
+    if (self) {
+        NSLog(@"HERE");
+        _backgroundView = [[UIView alloc] initWithFrame:CGRectMake(40, -10, 200, 200)];
+        [_backgroundView setBackgroundColor:[UIColor blackColor]];
+        [_backgroundView setAlpha:0.8];
+        _backgroundView.layer.cornerRadius = 15;
+        [self addSubview:_backgroundView];
+        alertType = GIDAAlertViewNoPrompt;
+    }
+    return self;
+}
 -(id)initWithTitle:(NSString *)title cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle andMessage:(NSString *)message {
     while ([title sizeWithFont:[UIFont systemFontOfSize:18.0]].width > 240.0) {
         title = [NSString stringWithFormat:@"%@...", [title substringToIndex:[title length] - 4]];
@@ -319,15 +337,12 @@
         [_backgroundView setAlpha:0.8];
         _backgroundView.layer.cornerRadius = 15;
         [self addSubview:_backgroundView];
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(12.0, 45.0, 260.0, 31.0)];
-        [label setBackgroundColor:[UIColor clearColor]];
-        [label setTextColor:[UIColor whiteColor]];
-        [label setTextAlignment:NSTextAlignmentCenter];
-        [label setText:message];
-        [self addSubview:label];
-        _theMessage = label;
-        [label release];
-        
+        _theMessage = [[UILabel alloc] initWithFrame:CGRectMake(12.0, 45.0, 260.0, 31.0)];
+        [_theMessage setBackgroundColor:[UIColor clearColor]];
+        [_theMessage setTextColor:[UIColor whiteColor]];
+        [_theMessage setTextAlignment:NSTextAlignmentCenter];
+        [_theMessage setText:message];
+        [self addSubview:_theMessage];        
         _alertColor = [UIColor blackColor];
         
         // if not >= 4.0
@@ -573,7 +588,7 @@
         [label setBackgroundColor:[UIColor clearColor]];
         [label setText:character];
      //   [label setFont:[UIFont systemFontOfSize:90]];
-        [label setFont:[UIFont fontWithName:@"Symbol" size:100]];
+        [label setFont:[UIFont fontWithName:@"ZapfDingbatsITC" size:100]];
        // [label setAdjustsFontSizeToFitWidth:YES];
         [self addSubview:label];
         
