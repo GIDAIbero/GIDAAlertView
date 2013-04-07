@@ -18,6 +18,7 @@
 }
 
 @property (retain, readwrite) IBOutlet UISegmentedControl *segmentedSelector;
+@property (retain, nonatomic) IBOutlet UISegmentedControl *segmentedSecond;
 @property (retain, readwrite) GIDAAlertView *spinnerAlert;
 @property (retain, readwrite) GIDAAlertView *customAlert;
 

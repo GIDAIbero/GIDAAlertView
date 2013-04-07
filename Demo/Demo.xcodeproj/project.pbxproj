@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BEA8EF0916DFF588006AE4EF /* Bar.png in Resources */ = {isa = PBXBuildFile; fileRef = BEA8EF0816DFF588006AE4EF /* Bar.png */; };
+		BE9C93A117117FE3000E95C0 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BE9C93A017117FE3000E95C0 /* Default-568h@2x.png */; };
 		DD2C7BF414EA212A00F7752C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD2C7BF314EA212A00F7752C /* UIKit.framework */; };
 		DD2C7BF614EA212A00F7752C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD2C7BF514EA212A00F7752C /* Foundation.framework */; };
 		DD2C7BF814EA212A00F7752C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD2C7BF714EA212A00F7752C /* CoreGraphics.framework */; };
@@ -23,7 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		BEA8EF0816DFF588006AE4EF /* Bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Bar.png; sourceTree = "<group>"; };
+		BE9C93A017117FE3000E95C0 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		DD2C7BEF14EA212A00F7752C /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD2C7BF314EA212A00F7752C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		DD2C7BF514EA212A00F7752C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -90,7 +90,6 @@
 		DD2C7BF914EA212A00F7752C /* Demo */ = {
 			isa = PBXGroup;
 			children = (
-				BEA8EF0816DFF588006AE4EF /* Bar.png */,
 				DD2C7C0214EA212A00F7752C /* GIDAAppDelegate.h */,
 				DD2C7C0314EA212A00F7752C /* GIDAAppDelegate.m */,
 				DDFF3D0914EDFB9F0082BDC4 /* TestViewController.h */,
@@ -120,6 +119,7 @@
 				DDFF3D0D14EDFC300082BDC4 /* Test.xib */,
 				DD2C7C1A14EA228300F7752C /* noresource.png */,
 				DD2C7C1B14EA228300F7752C /* noresource@2x.png */,
+				BE9C93A017117FE3000E95C0 /* Default-568h@2x.png */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -179,7 +179,7 @@
 				DD2C7C1C14EA228300F7752C /* noresource.png in Resources */,
 				DD2C7C1D14EA228300F7752C /* noresource@2x.png in Resources */,
 				DDFF3D0E14EDFC300082BDC4 /* Test.xib in Resources */,
-				BEA8EF0916DFF588006AE4EF /* Bar.png in Resources */,
+				BE9C93A117117FE3000E95C0 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

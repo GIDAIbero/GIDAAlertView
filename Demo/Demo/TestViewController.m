@@ -51,67 +51,145 @@
         [customAlert release];
     }
     
+    [_segmentedSecond release];
     [super dealloc];
 }
 - (void)wasteTimeMethod {
-    [NSThread sleepForTimeInterval:10];
+    [NSThread sleepForTimeInterval:5];
 }
 
 -(void)alertFinished:(GIDAAlertView *)alertView {
-    if ([alertView type] == GIDAAlertViewProgressURL) {
-        NSDictionary *data = [alertView getDownloadedData];
-        if (data) {
-            UIWebView *web = [[UIWebView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
-            [web loadData:[data objectForKey:@"data"]
-                 MIMEType:[data objectForKey:@"mime"]
-         textEncodingName:[data objectForKey:@"encoding"]
-                  baseURL:[data objectForKey:@"url"]];
-            UIViewController *uvc = [[UIViewController alloc] init];
-            [uvc.view addSubview:web];
-            [self presentModalViewController:uvc animated:YES];
-        } else {
-            customAlert = [[GIDAAlertView alloc] initWithMessage:@"Connection failed"
-                                                   andAlertImage:[UIImage imageNamed:@"noresource.png"]];
-            [customAlert presentAlertFor:2];
-            [customAlert release];
-        }
+    switch([alertView type]){
+        case GIDAAlertViewProgressURL:
+            NSLog(@"ProgressURL");
+            NSDictionary *data = [alertView getDownloadedData];
+            if (data) {
+                if (data[@"error"]) {
+                    customAlert = [[GIDAAlertView alloc] initWithMessage:data[@"error"]
+                                                           andAlertImage:[UIImage imageNamed:@"noresource.png"]];
+                    [customAlert presentAlertFor:2];
+                    [customAlert release];
+                } else {
+                    UIWebView *web = [[UIWebView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
+                    [web loadData:[data objectForKey:@"data"]
+                         MIMEType:[data objectForKey:@"mime"]
+                 textEncodingName:[data objectForKey:@"encoding"]
+                          baseURL:[data objectForKey:@"url"]];
+                    UIViewController *uvc = [[UIViewController alloc] init];
+                    [uvc.view addSubview:web];
+                    UILabel *_cancelLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 32, 32)];
+                    [_cancelLabel setBackgroundColor:[UIColor blackColor]];
+                    [_cancelLabel setTextAlignment:UITextAlignmentCenter];
+                    [_cancelLabel setTextColor:[UIColor whiteColor]];
+                    [_cancelLabel setText:@"\u2718"];
+                    [_cancelLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
+                    _cancelLabel.layer.cornerRadius = 15;
+                    _cancelLabel.layer.borderColor = [[UIColor whiteColor] CGColor];
+                    _cancelLabel.layer.borderWidth = 1.5;
+                    CGRect frame = [[UIScreen mainScreen] applicationFrame];
+                    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(frame.size.width-35, 0, 20, 20)];
+                    [button addSubview:_cancelLabel];
+                    [button addTarget:self action:@selector(doneWithWebView:) forControlEvents:UIControlEventTouchUpInside];
+                    [uvc.view addSubview:button];
+                    [uvc.view bringSubviewToFront:button];
+                    [self presentModalViewController:uvc animated:YES];
+                    [_cancelLabel release];
+                    [web release];
+                    [uvc release];
+                }
+            } else {
+                customAlert = [[GIDAAlertView alloc] initWithMessage:@"Connection failed"
+                                                       andAlertImage:[UIImage imageNamed:@"noresource.png"]];
+                [customAlert presentAlertFor:2];
+                [customAlert release];
+            }
+            break;
+        case GIDAAlertViewPrompt:
+            if ([alertView accepted]) {
+                customAlert = [[GIDAAlertView alloc] initWithTitle:@"Entered text" cancelButtonTitle:nil acceptButtonTitle:@"Ok" andMessage:[alertView enteredText]];
+                [customAlert show];
+                [customAlert release];
+            }
+            break;
+        default:
+            break;
     }
 }
--(IBAction)showAlert:(id)sender{
+-(void)doneWithWebView:(id)sender {
+    [self dismissModalViewControllerAnimated:YES];
+}
+-(void)viewDidLoad {
+    [super viewDidLoad];
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        UIFont *font = [UIFont boldSystemFontOfSize:12.0f];
+        NSDictionary *attributes = [NSDictionary dictionaryWithObject:font
+                                                               forKey:UITextAttributeFont];
+        [segmentedSelector setTitleTextAttributes:attributes
+                                         forState:UIControlStateNormal];
+        [_segmentedSecond setTitleTextAttributes:attributes
+                                        forState:UIControlStateNormal];
+    }
+}
+
+-(IBAction)showAlert:(UISegmentedControl *)sender{
     NSURL *url = nil;
-    switch ([segmentedSelector selectedSegmentIndex]) {
+    if ([sender isEqual:segmentedSelector]) {
+    switch ([sender selectedSegmentIndex]) {
         case 0:
             customAlert=[[GIDAAlertView alloc] initWithMessage:@"GIDAAlertView Custom" andAlertImage:[UIImage imageNamed:@"noresource.png"]];
             [customAlert setColor:[UIColor iberoBlueColor]];
             [customAlert presentAlertFor:2];
             break;
         case 1:
-            customAlert = [[GIDAAlertView alloc] initWithSpinnerAndMessage:@"GIDAAlertView Spinner"];
-            [customAlert setColor:[UIColor iberoBlueColor]];
-            [customAlert presentAlertWithSpinnerAndHideAfterSelector:@selector(wasteTimeMethod) from:self withObject:nil];
-            break;
-        case 2:
-            customAlert = [[GIDAAlertView alloc] initWithPrompt:@"Test"
+            customAlert = [[GIDAAlertView alloc] initWithPrompt:@"Testing\nTesting"
                                               cancelButtonTitle:@"Cancel"
                                               acceptButtonTitle:@"Accept"];
+            [customAlert setDelegate:self];
             [customAlert setColor:[UIColor iberoBlueColor]];
             [customAlert show];
             break;
+        case 2:
+            customAlert = [[GIDAAlertView alloc] initWithCheckMarkAndMessage:@"Success"];
+            [customAlert presentAlertFor:1.08];
+            break;
         case 3:
-            url = [NSURL URLWithString:@"http://funtooo.com/wp-content/uploads/2013/02/I-m-Hungry...I-Should-Eat-myself.....gif"];
-            customAlert = [[GIDAAlertView alloc] initWithProgressBarAndMessage:@"Downloading"
-                                                                        andURL:url];
-            [customAlert setDelegate:self];
-            [customAlert setProgressBarColor:[UIColor iberoRedColor]];
-            [customAlert progresBarStartDownload];
+            customAlert = [[GIDAAlertView alloc] initWithXMarkAndMessage:@"No Success"];
+            [customAlert presentAlertFor:1.08];
+            break;
+        case 4:
+            customAlert = [[GIDAAlertView alloc] initWithExclamationMarkAndMessage:@"HELP"];
+            [customAlert presentAlertFor:1.08];
             break;
         default:
             break;
     }
-  /*  if (customAlert) {
-        [customAlert release];
-        customAlert = nil;
-    }*/
+    } else {
+        switch ([sender selectedSegmentIndex]) {
+            case 0:
+                url = [NSURL URLWithString:@"http://funtooo.com/wp-content/uploads/2013/02/I-m-Hungry...I-Should-Eat-myself.....gif"];
+                customAlert = [[GIDAAlertView alloc] initWithProgressBarAndMessage:@"Downloading"
+                                                                            andURL:url
+                                                               andProgressBarColor:[UIColor iberoRedColor]];
+                [customAlert setDelegate:self];
+                [customAlert progresBarStartDownload];
+                break;
+            case 1:
+                customAlert = [[GIDAAlertView alloc] initWithProgressBarAndMessage:@"Waiting" andTime:10];
+                [customAlert setProgressBarColor:[UIColor gidaOrangeColor]];
+                [customAlert presentProgressBar];
+                break;
+            case 2:
+                customAlert = [[GIDAAlertView alloc] initWithSpinnerAndMessage:@"GIDAAlertView Spinner"];
+                [customAlert setColor:[UIColor iberoBlueColor]];
+                [customAlert presentAlertWithSpinnerAndHideAfterSelector:@selector(wasteTimeMethod) from:self withObject:nil];
+                break;
+            default:
+                break;
+        }
+    }
+    [customAlert release];
+    customAlert = nil;
+    
 }
 
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation{
@@ -121,9 +199,9 @@
 #pragma mark - View lifecycle
 - (void)viewDidUnload{
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-    self.segmentedSelector=nil;
+    self.segmentedSelector = nil;
+    self.segmentedSecond = nil;
+    
 }
 
 @end

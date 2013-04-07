@@ -14,17 +14,23 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
+
 typedef enum {
     GIDAAlertViewMessageImage   = 0,
     GIDAAlertViewSpinner        = 1,
     GIDAAlertViewPrompt         = 2,
     GIDAAlertViewNoPrompt       = 3,
     GIDAAlertViewProgressTime   = 4,
-    GIDAAlertViewProgressURL    = 5
+    GIDAAlertViewProgressURL    = 5,
+    GIDAAlertViewCheck          = 6,
+    GIDAAlertViewXMark          = 7
 }GIDAAlertViewType;
 
 @interface ProgressBar : UIView
-@property (strong) UIColor *color;
+-(id)initWithFrame:(CGRect)frame andProgressBarColor:(UIColor *)pcolor;
+-(void)moveBar:(CGFloat)progress;
+-(void)setProgressBarColor:(UIColor *)color;
 @end
 
 @class GIDAAlertView;
@@ -37,17 +43,22 @@ typedef enum {
 
 @interface GIDAAlertView : UIAlertView <NSURLConnectionDataDelegate, UIAlertViewDelegate>
 @property (nonatomic, retain) NSString *identifier;
-@property (nonatomic, retain) UIColor *progressBarColor;
 @property (readonly) GIDAAlertViewType type;
 @property (readonly) BOOL accepted;
 @property (nonatomic, retain) id <GIDAAlertViewDelegate> gavdelegate;
 
 - (id)initWithMessage:(NSString *)someMessage andAlertImage:(UIImage *)someImage;
 - (id) initWithSpinnerAndMessage:(NSString *)message;
+
+- (id)initWithImage:(UIImage *)image andPrompt:(NSString *)prompt cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle;
 - (id)initWithPrompt:(NSString *)prompt cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle;
 - (id)initWithTitle:(NSString *)title cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle andMessage:(NSString *)message;
 - (id)initWithProgressBarAndMessage:(NSString *)message andTime:(NSInteger)seconds;
 - (id)initWithProgressBarAndMessage:(NSString *)message andURL:(NSURL *)url;
+- (id)initWithProgressBarAndMessage:(NSString *)message andURL:(NSURL *)url andProgressBarColor:(UIColor *)pcolor;
+- (id)initWithCheckMarkAndMessage:(NSString *)message;
+-(id)initWithXMarkAndMessage:(NSString *)message;
+-(id)initWithExclamationMarkAndMessage:(NSString *)message;
 
 - (void)setColor:(UIColor *)color;
 - (NSString *) enteredText;
@@ -58,4 +69,5 @@ typedef enum {
 - (void)progresBarStartDownload;
 
 -(NSDictionary *)getDownloadedData;
+-(void)setProgressBarColor:(UIColor *)color;
 @end
