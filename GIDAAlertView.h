@@ -36,24 +36,24 @@ typedef enum {
 @end
 
 @interface GIDAAlertView : UIAlertView <NSURLConnectionDataDelegate, UIAlertViewDelegate>
-@property (nonatomic, retain) NSString *identifier;
+@property (nonatomic, strong) NSString *identifier;
 @property (readonly) GIDAAlertViewType type;
 @property (readonly) BOOL accepted;
-@property (nonatomic, retain) id <GIDAAlertViewDelegate> gavdelegate;
+@property (nonatomic, strong) id <GIDAAlertViewDelegate> gavdelegate;
 
 - (id)initWithMessage:(NSString *)someMessage andAlertImage:(UIImage *)someImage;
-- (id) initWithSpinnerAndMessage:(NSString *)message;
+- (id) initWithSpinnerWith:(NSString *)message;
 
 - (id)initWithImage:(UIImage *)image andPrompt:(NSString *)prompt cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle;
 - (id)initWithPrompt:(NSString *)prompt cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle;
 - (id)initWithTitle:(NSString *)title cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle andMessage:(NSString *)message;
-- (id)initWithProgressBarAndMessage:(NSString *)message andTime:(NSInteger)seconds;
-- (id)initWithProgressBarAndMessage:(NSString *)message andURL:(NSURL *)url;
-- (id)initWithProgressBarAndMessage:(NSString *)message andURL:(NSURL *)url andProgressBarColor:(UIColor *)pcolor;
-- (id)initWithProgressCircleAndMessage:(NSString *)message andURL:(NSURL *)url;
-- (id)initWithCheckMarkAndMessage:(NSString *)message;
--(id)initWithXMarkAndMessage:(NSString *)message;
--(id)initWithExclamationMarkAndMessage:(NSString *)message;
+- (id)initWithProgressBarWith:(NSString *)message andTime:(NSInteger)seconds;
+- (id)initWithProgressBarWith:(NSString *)message andURL:(NSURL *)url;
+- (id)initWithProgressBarWith:(NSString *)message andURL:(NSURL *)url andProgressBarColor:(UIColor *)pcolor;
+- (id)initWithProgressCircleWith:(NSString *)message andURL:(NSURL *)url;
+- (id)initWithCheckMarkWith:(NSString *)message;
+-(id)initWithXMarkWith:(NSString *)message;
+-(id)initWithExclamationMarkWith:(NSString *)message;
 
 - (void)setColor:(UIColor *)color;
 - (NSString *) enteredText;

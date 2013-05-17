@@ -153,20 +153,20 @@
     BOOL failedDownload;
 }
 
-@property (nonatomic, retain) UITextField     *textField;
-@property (nonatomic, retain) UILabel         *theMessage;
-@property (nonatomic, retain) UIColor         *alertColor;
-@property (nonatomic, retain) NSTimer         *timer;
-@property (nonatomic, retain) NSMutableData   *responseData;
-@property (nonatomic, retain) NSURL           *userURL;
-@property (nonatomic, retain) NSString        *mimeType;
-@property (nonatomic, retain) NSString        *textEncoding;
-@property (nonatomic, retain) id               progressBar;
-@property (nonatomic, retain) UILabel         *progressLabel;
-@property (nonatomic, retain) NSURLConnection *connection;
-@property (nonatomic, retain) NSString        *downloadError;
-@property (nonatomic, retain) UILabel         *cancelLabel;
-@property (nonatomic, retain) UIView          *backgroundView;
+@property (nonatomic, strong) UITextField     *textField;
+@property (nonatomic, strong) UILabel         *theMessage;
+@property (nonatomic, strong) UIColor         *alertColor;
+@property (nonatomic, strong) NSTimer         *timer;
+@property (nonatomic, strong) NSMutableData   *responseData;
+@property (nonatomic, strong) NSURL           *userURL;
+@property (nonatomic, strong) NSString        *mimeType;
+@property (nonatomic, strong) NSString        *textEncoding;
+@property (nonatomic, strong) id               progressBar;
+@property (nonatomic, strong) UILabel         *progressLabel;
+@property (nonatomic, strong) NSURLConnection *connection;
+@property (nonatomic, strong) NSString        *downloadError;
+@property (nonatomic, strong) UILabel         *cancelLabel;
+@property (nonatomic, strong) UIView          *backgroundView;
 
 @end
 
@@ -197,8 +197,6 @@
         [messageLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
         [messageLabel setAdjustsFontSizeToFitWidth:YES];
         [self addSubview:messageLabel];
-        [messageLabel release];
-        [imageView release];
         
         _responseData = nil;
         alertType = GIDAAlertViewMessageImage;
@@ -207,7 +205,7 @@
 }
 
 
--(id)initWithProgressBarAndMessage:(NSString *)message andTime:(NSInteger)seconds {
+-(id)initWithProgressBarWith:(NSString *)message andTime:(NSInteger)seconds {
     self = [super initWithTitle:@"\n\n\n\n\n" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:nil];
     if (self) {
         progress = -0.1;
@@ -235,7 +233,6 @@
         [messageLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
         [messageLabel setAdjustsFontSizeToFitWidth:YES];
         [self addSubview:messageLabel];
-        [messageLabel release];
         
         _cancelLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 32, 32)];
         [_cancelLabel setBackgroundColor:[UIColor blackColor]];
@@ -275,7 +272,7 @@
     [[NSRunLoop mainRunLoop] addTimer:_timer forMode:NSDefaultRunLoopMode];
 }
 
--(id) initWithSpinnerAndMessage:(NSString *)message {
+-(id) initWithSpinnerWith:(NSString *)message {
     self = [super initWithTitle:@"\n\n\n\n\n" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
     if (self) {
         withSpinnerOrImage = YES;
@@ -297,8 +294,6 @@
         [messageLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
         [messageLabel setAdjustsFontSizeToFitWidth:YES];
         [self addSubview:messageLabel];
-        [messageLabel release];
-        [theSpinner release];
         _responseData = nil;
         alertType = GIDAAlertViewSpinner;
     }
@@ -374,8 +369,6 @@
         [self addSubview:imageView];
         [self addSubview:theTextField];
         self.textField = theTextField;
-        [theTextField release];
-        [imageView release];
         
         _alertColor = [UIColor blackColor];
         
@@ -438,8 +431,8 @@
 -(void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     _totalFileSize = response.expectedContentLength;
     _responseData = [[NSMutableData alloc] init];
-    _mimeType = [[response MIMEType] retain];
-    _textEncoding = [[response textEncodingName] retain];
+    _mimeType = [response MIMEType];
+    _textEncoding = [response textEncodingName];
 }
 
 -(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
@@ -480,7 +473,7 @@
     });
 }
 
-- (id)initWithProgressBarAndMessage:(NSString *)message andURL:(NSURL *)url andProgressBarColor:(UIColor *)pcolor {
+- (id)initWithProgressBarWith:(NSString *)message andURL:(NSURL *)url andProgressBarColor:(UIColor *)pcolor {
     self = [super initWithTitle:@"\n\n\n\n\n" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
     if (self) {
         _receivedDataBytes = 0;
@@ -509,7 +502,6 @@
         [messageLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
         [messageLabel setAdjustsFontSizeToFitWidth:YES];
         [self addSubview:messageLabel];
-        [messageLabel release];
         
         _cancelLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 32, 32)];
         [_cancelLabel setBackgroundColor:[UIColor blackColor]];
@@ -531,7 +523,7 @@
         failedDownload = NO;
         _responseData = nil;
         //[iv release];
-        _userURL = [url retain];
+        _userURL = url;
         alertType = GIDAAlertViewProgressURL;
     }
     return  self;
@@ -543,7 +535,7 @@
     
     [self dismissWithClickedButtonIndex:0 animated:YES];
 }
-- (id)initWithProgressBarAndMessage:(NSString *)message andURL:(NSURL *)url {
+- (id)initWithProgressBarWith:(NSString *)message andURL:(NSURL *)url {
     self = [super initWithTitle:@"\n\n\n\n\n" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
     if (self) {
         _receivedDataBytes = 0;
@@ -572,16 +564,15 @@
         [messageLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
         [messageLabel setAdjustsFontSizeToFitWidth:YES];
         [self addSubview:messageLabel];
-        [messageLabel release];
         failedDownload = NO;
         _responseData = nil;
         //[iv release];
-        _userURL = [url retain];
+        _userURL = url;
         alertType = GIDAAlertViewProgressURL;
     }
     return  self;
 }
-- (id)initWithProgressCircleAndMessage:(NSString *)message andURL:(NSURL *)url {
+- (id)initWithProgressCircleWith:(NSString *)message andURL:(NSURL *)url {
     self = [super initWithTitle:@"\n\n\n\n\n" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
     if (self) {
         _receivedDataBytes = 0;
@@ -593,16 +584,9 @@
         [_backgroundView setAlpha:0.8];
         _backgroundView.layer.cornerRadius = 15;
         [self addSubview:_backgroundView];
-        _progressBar = [[LoadingCircle alloc] initWithFrame:CGRectMake(90, 15, 100, 100)];
+        _progressBar = [[LoadingCircle alloc] initWithFrame:CGRectMake(90, 20, 100, 100)];
         [self addSubview:_progressBar];
-        /*_progressLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 50, 60, 50)];
-        [_progressLabel setTextAlignment:NSTextAlignmentCenter];
-        _progressLabel.baselineAdjustment = UIBaselineAdjustmentAlignCenters;
-        [_progressLabel setTextColor:[UIColor whiteColor]];
-        [_progressLabel setBackgroundColor:[UIColor clearColor]];
-        [_progressLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
-        [self addSubview:_progressLabel];*/
-        UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 115, 160, 50)];
+        UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 125, 160, 50)];
         [messageLabel setTextAlignment:NSTextAlignmentCenter];
         [messageLabel setText:message];
         [messageLabel setBackgroundColor:[UIColor clearColor]];
@@ -610,11 +594,9 @@
         [messageLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
         [messageLabel setAdjustsFontSizeToFitWidth:YES];
         [self addSubview:messageLabel];
-        [messageLabel release];
         failedDownload = NO;
         _responseData = nil;
-        //[iv release];
-        _userURL = [url retain];
+        _userURL = url;
         alertType = GIDAAlertViewProgressURL;
     }
     return  self;
@@ -622,7 +604,7 @@
 
 
 - (void)setColor:(UIColor *)color {
-    _alertColor = [color retain];
+    _alertColor = color;
     if (_backgroundView) {
         [_backgroundView setBackgroundColor:color];
     }
@@ -643,22 +625,6 @@
     return [[self theMessage] text];
 }
 
-- (void)dealloc {
-    [_textField release];
-    [_theMessage release];
-    [_alertColor release];
-    [_timer release];
-    [_responseData release];
-    [_userURL release];
-    [_mimeType release];
-    [_textEncoding release];
-    [_progressBar release];
-    [_progressLabel release];
-    [_downloadError release];
-    [_cancelLabel release];
-    [_backgroundView release];
-    [super dealloc];
-}
 
 - (void) layoutSubviews {
 	for (UIView *sub in [self subviews])
@@ -681,7 +647,10 @@
 -(void)presentAlertWithSpinnerAndHideAfterSelector:(SEL)selector from:(id)sender withObject:(id)object {
     [self show];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         [sender performSelector:selector withObject:object];
+#pragma clang diagnostic pop
         dispatch_async(dispatch_get_main_queue(), ^
                        {
                            [self dismissWithClickedButtonIndex:0 animated:YES];
@@ -716,13 +685,11 @@
         [messageLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
         [messageLabel setAdjustsFontSizeToFitWidth:YES];
         [self addSubview:messageLabel];
-        [messageLabel release];
-        [label release];
         _responseData = nil;
     }
     return self;
 }
--(id)initWithCheckMarkAndMessage:(NSString *)message {
+-(id)initWithCheckMarkWith:(NSString *)message {
     self = [self initWithCharacter:@"✓" andMessage:message];
     if (self) {
         alertType = GIDAAlertViewCheck;
@@ -730,7 +697,7 @@
     return self;
 }
 
--(id)initWithExclamationMarkAndMessage:(NSString *)message {
+-(id)initWithExclamationMarkWith:(NSString *)message {
     self = [self initWithCharacter:@"❢" andMessage:message];
     if (self) {
         alertType = GIDAAlertViewCheck;
@@ -738,7 +705,7 @@
     return self;
 }
 
--(id)initWithXMarkAndMessage:(NSString *)message {
+-(id)initWithXMarkWith:(NSString *)message {
     self = [self initWithCharacter:@"\u2718" andMessage:message];
     if (self) {
         alertType = GIDAAlertViewCheck;
