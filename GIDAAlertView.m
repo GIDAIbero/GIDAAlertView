@@ -15,6 +15,84 @@
 
 #import "GIDAAlertView.h"
 
+@interface LoadingCircle : UIView {
+    //Angle for arc, in radians.
+    CGFloat angle;
+    //Color for arc
+    CGColorRef arcColor;
+}
+@property (nonatomic, strong) UILabel *percentageLabel;
+@end
+
+@implementation LoadingCircle
+-(id)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self setBackgroundColor:[UIColor clearColor]];
+        
+        //Start at -90 as 0.0 is to the right.
+        angle = -90.0f*M_PI/180.0f;
+        
+        CGRect labelFrame = frame;
+        labelFrame.origin.x = 0;
+        labelFrame.origin.y = 0;
+        //Label to show the current percentage. Size of the frame to have the text centered.
+        _percentageLabel = [[UILabel alloc] initWithFrame:labelFrame];
+        [_percentageLabel setTextAlignment:NSTextAlignmentCenter];
+        [_percentageLabel setBackgroundColor:[UIColor clearColor]];
+        [_percentageLabel setTextColor:[UIColor whiteColor]];
+        [_percentageLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
+        [self addSubview:_percentageLabel];
+        arcColor = [UIColor whiteColor].CGColor;
+    }
+    return self;
+}
+
+-(void)setProgressColor:(UIColor *)color {
+    arcColor = [color CGColor];
+//    [_percentageLabel setTextColor:color];
+}
+//Update percentage values.
+-(void)updateProgress:(CGFloat)percentage {
+    
+    //Update the percentage label appropriately
+    if (percentage >= 1.0f) {
+        [_percentageLabel setText:@"100%"];
+    } else {
+        [_percentageLabel setText:[NSString stringWithFormat:@"%.1f%c",percentage*100,'%']];
+    }
+    
+    //Calculate angle from percentage.
+    angle = (percentage * 360)-90;
+    angle = angle*M_PI/180.0f;
+    
+    //Call drawRect to draw again.
+    [self setNeedsDisplay];
+}
+//Draw back circle and percentage arc.
+-(void)drawRect:(CGRect)rect {
+    CGSize size = rect.size;
+    CGFloat radius = size.width/2.0f;
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGContextSetLineWidth(context, 12.0);
+    
+    //Set the back circle, done by an elipse of the size of the UIView frame.
+    CGContextSetStrokeColorWithColor(context, [UIColor lightGrayColor].CGColor);
+    CGRect elipse = CGRectMake(6, 6, size.width-12, size.height-12);
+    CGContextAddEllipseInRect(context, elipse);
+    CGContextStrokePath(context);
+    
+    //Set the arc of the progress so far. Starting from center top, to the percentage angle in a clockwise way.
+    CGContextSetStrokeColorWithColor(context, [UIColor whiteColor].CGColor);
+    CGContextAddArc(context, radius, radius, radius-6, -90.0f*M_PI/180.0f, angle, 0);
+    CGContextStrokePath(context);
+}
+@end
+
+@interface ProgressBar : UIView
+
+@end
 @implementation ProgressBar
 
 -(id)initWithFrame:(CGRect)frame {
@@ -49,7 +127,7 @@
 -(void)setProgressBarColor:(UIColor *)color {
     [self setBackgroundColor:color];
 }
--(void)moveBar:(CGFloat)progress {
+-(void)updateProgress:(CGFloat)progress {
     CGRect frame = self.frame;
     frame.size.width = 100*progress;
     self.frame = frame;
@@ -83,7 +161,7 @@
 @property (nonatomic, retain) NSURL           *userURL;
 @property (nonatomic, retain) NSString        *mimeType;
 @property (nonatomic, retain) NSString        *textEncoding;
-@property (nonatomic, retain) ProgressBar     *progressBar;
+@property (nonatomic, retain) id               progressBar;
 @property (nonatomic, retain) UILabel         *progressLabel;
 @property (nonatomic, retain) NSURLConnection *connection;
 @property (nonatomic, retain) NSString        *downloadError;
@@ -183,7 +261,7 @@
 -(void)moveProgress {
     if (progress <= 1.0) {
         progress += 0.1;
-        [_progressBar moveBar:progress];
+        [_progressBar updateProgress:progress];
         [_progressLabel setText:[NSString stringWithFormat:@"%0.0f%@",fabs(progress*100),@"%"]];
     } else {
         [_timer invalidate];
@@ -372,15 +450,15 @@
     if (progress < 1 && progress >= 0) {
         NSString *string = [NSString stringWithFormat:@"%.1f%@",progress*100,@"%"];
         [_progressLabel setText:string];
-        [_progressBar moveBar:progress];
+        [_progressBar updateProgress:progress];
     } else {
         [_progressLabel setText:@"100%"];
-        [_progressBar moveBar:1];
+        [_progressBar updateProgress:1];
     }
 }
 
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    [_progressBar moveBar:1];
+    [_progressBar updateProgress:1];
     [_progressLabel setText:@"100%"];
     double delayInSeconds = 0.7;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
@@ -486,6 +564,44 @@
         [_progressLabel setBackgroundColor:[UIColor clearColor]];
         [_progressLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
         [self addSubview:_progressLabel];
+        UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 115, 160, 50)];
+        [messageLabel setTextAlignment:NSTextAlignmentCenter];
+        [messageLabel setText:message];
+        [messageLabel setBackgroundColor:[UIColor clearColor]];
+        [messageLabel setTextColor:[UIColor whiteColor]];
+        [messageLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
+        [messageLabel setAdjustsFontSizeToFitWidth:YES];
+        [self addSubview:messageLabel];
+        [messageLabel release];
+        failedDownload = NO;
+        _responseData = nil;
+        //[iv release];
+        _userURL = [url retain];
+        alertType = GIDAAlertViewProgressURL;
+    }
+    return  self;
+}
+- (id)initWithProgressCircleAndMessage:(NSString *)message andURL:(NSURL *)url {
+    self = [super initWithTitle:@"\n\n\n\n\n" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+    if (self) {
+        _receivedDataBytes = 0;
+        _totalFileSize = 0;
+        progress = -0.1;
+        withSpinnerOrImage = YES;
+        _backgroundView = [[UIView alloc] initWithFrame:CGRectMake(40, -10, 200, 200)];
+        [_backgroundView setBackgroundColor:[UIColor blackColor]];
+        [_backgroundView setAlpha:0.8];
+        _backgroundView.layer.cornerRadius = 15;
+        [self addSubview:_backgroundView];
+        _progressBar = [[LoadingCircle alloc] initWithFrame:CGRectMake(90, 15, 100, 100)];
+        [self addSubview:_progressBar];
+        /*_progressLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 50, 60, 50)];
+        [_progressLabel setTextAlignment:NSTextAlignmentCenter];
+        _progressLabel.baselineAdjustment = UIBaselineAdjustmentAlignCenters;
+        [_progressLabel setTextColor:[UIColor whiteColor]];
+        [_progressLabel setBackgroundColor:[UIColor clearColor]];
+        [_progressLabel setFont:[UIFont fontWithName:@"TimesNewRomanPS-BoldMT" size:20]];
+        [self addSubview:_progressLabel];*/
         UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 115, 160, 50)];
         [messageLabel setTextAlignment:NSTextAlignmentCenter];
         [messageLabel setText:message];

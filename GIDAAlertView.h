@@ -27,12 +27,6 @@ typedef enum {
     GIDAAlertViewXMark          = 7
 }GIDAAlertViewType;
 
-@interface ProgressBar : UIView
--(id)initWithFrame:(CGRect)frame andProgressBarColor:(UIColor *)pcolor;
--(void)moveBar:(CGFloat)progress;
--(void)setProgressBarColor:(UIColor *)color;
-@end
-
 @class GIDAAlertView;
 @protocol GIDAAlertViewDelegate <NSObject>
 @optional
@@ -56,6 +50,7 @@ typedef enum {
 - (id)initWithProgressBarAndMessage:(NSString *)message andTime:(NSInteger)seconds;
 - (id)initWithProgressBarAndMessage:(NSString *)message andURL:(NSURL *)url;
 - (id)initWithProgressBarAndMessage:(NSString *)message andURL:(NSURL *)url andProgressBarColor:(UIColor *)pcolor;
+- (id)initWithProgressCircleAndMessage:(NSString *)message andURL:(NSURL *)url;
 - (id)initWithCheckMarkAndMessage:(NSString *)message;
 -(id)initWithXMarkAndMessage:(NSString *)message;
 -(id)initWithExclamationMarkAndMessage:(NSString *)message;

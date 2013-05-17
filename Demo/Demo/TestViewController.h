@@ -17,10 +17,10 @@
     GIDAAlertView *customAlert;
 }
 
-@property (retain, readwrite) IBOutlet UISegmentedControl *segmentedSelector;
-@property (retain, nonatomic) IBOutlet UISegmentedControl *segmentedSecond;
-@property (retain, readwrite) GIDAAlertView *spinnerAlert;
-@property (retain, readwrite) GIDAAlertView *customAlert;
+@property (strong, readwrite) IBOutlet UISegmentedControl *segmentedSelector;
+@property (strong, nonatomic) IBOutlet UISegmentedControl *segmentedSecond;
+@property (strong, readwrite) GIDAAlertView *spinnerAlert;
+@property (strong, readwrite) GIDAAlertView *customAlert;
 
 
 -(IBAction)showAlert:(id)sender;
