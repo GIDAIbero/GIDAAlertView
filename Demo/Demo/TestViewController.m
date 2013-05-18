@@ -124,8 +124,8 @@
     if ([sender isEqual:segmentedSelector]) {
     switch ([sender selectedSegmentIndex]) {
         case 0:
-            customAlert=[[GIDAAlertView alloc] initWithMessage:@"GIDAAlertView Custom" andAlertImage:[UIImage imageNamed:@"noresource.png"]];
-            [customAlert setColor:[UIColor iberoBlueColor]];
+            customAlert=[[GIDAAlertView alloc] initWithMessage:@"Custom AlertView" andAlertImage:[UIImage imageNamed:@"noresource.png"]];
+            //[customAlert setColor:[UIColor iberoBlueColor]];
             [customAlert presentAlertFor:2];
             break;
         case 1:
@@ -133,22 +133,22 @@
                                               cancelButtonTitle:@"Cancel"
                                               acceptButtonTitle:@"Accept"];
             [customAlert setDelegate:self];
-            [customAlert setColor:[UIColor iberoBlueColor]];
+            //[customAlert setColor:[UIColor iberoBlueColor]];
             [customAlert show];
             break;
         case 2:
-            customAlert = [[GIDAAlertView alloc] initWithCheckMarkWith:@"Success"];
-            [customAlert setColor:[UIColor iberoBlueColor]];
+            customAlert = [[GIDAAlertView alloc] initWithCheckMarkAndMessage:@"Success"];
+            //[customAlert setColor:[UIColor iberoBlueColor]];
             [customAlert presentAlertFor:1.08];
             break;
         case 3:
             customAlert = [[GIDAAlertView alloc] initWithXMarkWith:@"No Success"];
-            [customAlert setColor:[UIColor iberoBlueColor]];
+            //[customAlert setColor:[UIColor iberoBlueColor]];
             [customAlert presentAlertFor:1.08];
             break;
         case 4:
-            customAlert = [[GIDAAlertView alloc] initWithExclamationMarkWith:@"HELP"];
-            [customAlert setColor:[UIColor iberoBlueColor]];
+            customAlert = [[GIDAAlertView alloc] initWithExclamationMarkAndMessage:@"HELP"];
+            //[customAlert setColor:[UIColor iberoBlueColor]];
             [customAlert presentAlertFor:1.08];
             break;
         default:
@@ -160,25 +160,25 @@
                 url = [NSURL URLWithString:@"http://funtooo.com/wp-content/uploads/2013/02/I-m-Hungry...I-Should-Eat-myself.....gif"];
                 customAlert = [[GIDAAlertView alloc] initWithProgressBarWith:@"Downloading" andURL:url];
                 [customAlert setDelegate:self];
-                [customAlert setColor:[UIColor iberoBlueColor]];
+                //[customAlert setColor:[UIColor iberoBlueColor]];
                 [customAlert progresBarStartDownload];
                 break;
             case 1:
                 customAlert = [[GIDAAlertView alloc] initWithProgressBarWith:@"Waiting" andTime:10];
                 [customAlert setProgressBarColor:[UIColor gidaOrangeColor]];
-                [customAlert setColor:[UIColor iberoBlueColor]];
+                //[customAlert setColor:[UIColor iberoBlueColor]];
                 [customAlert presentProgressBar];
                 break;
             case 2:
                 url = [NSURL URLWithString:@"http://funtooo.com/wp-content/uploads/2013/02/I-m-Hungry...I-Should-Eat-myself.....gif"];
                 customAlert = [[GIDAAlertView alloc] initWithProgressCircleWith:@"Downloading" andURL:url];
                 [customAlert setDelegate:self];
-                [customAlert setColor:[UIColor iberoBlueColor]];
+                [customAlert setProgressBarColor:[UIColor iberoBlueColor]];
                 [customAlert progresBarStartDownload];
                 break;
             case 3:
                 customAlert = [[GIDAAlertView alloc] initWithSpinnerWith:@"GIDAAlertView Spinner"];
-                [customAlert setColor:[UIColor iberoBlueColor]];
+                //[customAlert setColor:[UIColor iberoBlueColor]];
                 [customAlert presentAlertWithSpinnerAndHideAfterSelector:@selector(wasteTimeMethod) from:self withObject:nil];
                 break;
             default:
