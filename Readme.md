@@ -4,8 +4,11 @@ GIDAAlertView is a subclass of UIAlertView; presenting alerts with a flat backgr
 
 iOS 5 or newer is required `(Has not been tested in lower iOS)`
 
-![Testing]( http://raw.github.com/aparedes/GIDAAlertView/Resources/Testing.png )
-![Loading]( http://raw.github.com/aparedes/GIDAAlertView/Resources/Loading.png )
+![Testing]( https://raw.github.com/aparedes/GIDAAlertView/newalertview/Resources/Testing.png  )
+![Loading]( https://raw.github.com/aparedes/GIDAAlertView/newalertview/Resources/Loading.png  )
+
+[Video of download]( https://raw.github.com/aparedes/GIDAAlertView/newalertview/Resources/Download.mov )
+
 
 # Usage
 
@@ -20,7 +23,7 @@ When installed, run:
 
 &lt;Option\>:
 + -d Documented methods/properties only
-+ -u Undocumented methods/properties
++ -u Undocumented methods/properties (Default)
 
 [Apple|HTML]
 + Apple will install the documentation to Xcode help.
