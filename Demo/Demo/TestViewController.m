@@ -3,7 +3,7 @@
 //  Demo
 //
 //  Created by Yoshiki - Vázquez Baeza on 16/02/12.
-//  Copyright (c) 2012 Polar Bears Nanotechnology Research ©. All rights reserved.
+//  Copyright (c) 2013 GIDAIbero ©. All rights reserved.
 //
 
 #define iberoRedColor       colorWithRed:0.541176 green:0.0745098 blue:0.088274 alpha:1
@@ -52,7 +52,6 @@
     switch([alertView type]){
         case GIDAAlertViewProgressURL:
         {
-            NSLog(@"ProgressURL");
             NSDictionary *data = [alertView getDownloadedData];
             if (data) {
                 if (data[@"error"]) {

@@ -17,14 +17,14 @@
 #import <QuartzCore/QuartzCore.h>
 
 typedef enum {
-    GIDAAlertViewMessageImage   = 0,
-    GIDAAlertViewSpinner        = 1,
-    GIDAAlertViewPrompt         = 2,
-    GIDAAlertViewNoPrompt       = 3,
-    GIDAAlertViewProgressTime   = 4,
-    GIDAAlertViewProgressURL    = 5,
-    GIDAAlertViewCheck          = 6,
-    GIDAAlertViewXMark          = 7
+    GIDAAlertViewMessageImage,
+    GIDAAlertViewSpinner,
+    GIDAAlertViewPrompt,
+    GIDAAlertViewNoPrompt,
+    GIDAAlertViewProgressTime,
+    GIDAAlertViewProgressURL,
+    GIDAAlertViewCheck,
+    GIDAAlertViewXMark
 }GIDAAlertViewType;
 
 @class GIDAAlertView;

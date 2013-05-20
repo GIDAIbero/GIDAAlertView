@@ -51,7 +51,6 @@
 
 -(void)setProgressColor:(UIColor *)color {
     _arcColor = color;
-//    [_percentageLabel setTextColor:color];
 }
 //Update percentage values.
 -(void)updateProgress:(CGFloat)percentage {
@@ -396,12 +395,6 @@
         
         _alertColor = [UIColor blackColor];
         
-        // if not >= 4.0
-        NSString *sysVersion = [[UIDevice currentDevice] systemVersion];
-        if (![sysVersion compare:@"4.0" options:NSNumericSearch] == NSOrderedDescending) {
-            CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, 130.0);
-            [self setTransform:translate];
-        }
         _responseData = nil;
         alertType = GIDAAlertViewPrompt;
     }
@@ -410,7 +403,6 @@
 -(id)initWithTitle:(NSString *)title message:(NSString *)message delegate:(id)delegate cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
     self = [super initWithTitle:title message:message delegate:delegate cancelButtonTitle:cancelButtonTitle otherButtonTitles:nil];
     if (self) {
-        NSLog(@"HERE");
         _backgroundView = [[UIView alloc] initWithFrame:CGRectMake(40, -10, 200, 200)];
         [_backgroundView setBackgroundColor:[UIColor blackColor]];
         [_backgroundView setAlpha:0.8];
@@ -441,12 +433,6 @@
         [self addSubview:_messageLabel];
         _alertColor = [UIColor blackColor];
         
-        // if not >= 4.0
-        NSString *sysVersion = [[UIDevice currentDevice] systemVersion];
-        if (![sysVersion compare:@"4.0" options:NSNumericSearch] == NSOrderedDescending) {
-            CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, 130.0);
-            [self setTransform:translate];
-        }
         _responseData = nil;
         alertType = GIDAAlertViewNoPrompt;
     }
@@ -638,9 +624,7 @@
         [label setTextColor:[UIColor whiteColor]];
         [label setBackgroundColor:[UIColor clearColor]];
         [label setText:character];
-     //   [label setFont:[UIFont systemFontOfSize:90]];
         [label setFont:[UIFont fontWithName:@"ZapfDingbatsITC" size:100]];
-       // [label setAdjustsFontSizeToFitWidth:YES];
         [self addSubview:label];
         
         _messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 125, 160, 50)];
