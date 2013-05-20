@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BE73402617478DD700DC4945 /* image.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = BE73402517478DD700DC4945 /* image.jpeg */; };
+		BE9C93A117117FE3000E95C0 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BE9C93A017117FE3000E95C0 /* Default-568h@2x.png */; };
 		DD2C7BF414EA212A00F7752C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD2C7BF314EA212A00F7752C /* UIKit.framework */; };
 		DD2C7BF614EA212A00F7752C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD2C7BF514EA212A00F7752C /* Foundation.framework */; };
 		DD2C7BF814EA212A00F7752C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD2C7BF714EA212A00F7752C /* CoreGraphics.framework */; };
@@ -22,6 +24,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BE73402517478DD700DC4945 /* image.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = image.jpeg; sourceTree = "<group>"; };
+		BE9C93A017117FE3000E95C0 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		DD2C7BEF14EA212A00F7752C /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD2C7BF314EA212A00F7752C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		DD2C7BF514EA212A00F7752C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -114,9 +118,11 @@
 		DDFF3D1314EE03360082BDC4 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				BE73402517478DD700DC4945 /* image.jpeg */,
 				DDFF3D0D14EDFC300082BDC4 /* Test.xib */,
 				DD2C7C1A14EA228300F7752C /* noresource.png */,
 				DD2C7C1B14EA228300F7752C /* noresource@2x.png */,
+				BE9C93A017117FE3000E95C0 /* Default-568h@2x.png */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -147,7 +153,7 @@
 		DD2C7BE614EA212A00F7752C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Polar Bears Nanotechnology Research ©";
 			};
 			buildConfigurationList = DD2C7BE914EA212A00F7752C /* Build configuration list for PBXProject "Demo" */;
@@ -176,6 +182,8 @@
 				DD2C7C1C14EA228300F7752C /* noresource.png in Resources */,
 				DD2C7C1D14EA228300F7752C /* noresource@2x.png in Resources */,
 				DDFF3D0E14EDFC300082BDC4 /* Test.xib in Resources */,
+				BE9C93A117117FE3000E95C0 /* Default-568h@2x.png in Resources */,
+				BE73402617478DD700DC4945 /* image.jpeg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -212,6 +220,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -225,6 +237,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				SDKROOT = iphoneos;
@@ -236,12 +249,17 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
@@ -253,12 +271,13 @@
 		DD2C7C0814EA212A00F7752C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Demo/Demo-Prefix.pch";
 				INFOPLIST_FILE = "Demo/Demo-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -266,12 +285,13 @@
 		DD2C7C0914EA212A00F7752C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Demo/Demo-Prefix.pch";
 				INFOPLIST_FILE = "Demo/Demo-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
