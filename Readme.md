@@ -1,31 +1,37 @@
 # Description
 
-The GIDAAlertView class (very similar to the `MBProgressHUD`) is used to display a short message and show an icon (usually related to the message that's been displayed) to the user. The layout is very similar to what Mac OS X uses to show the "volume up" and the "volume down" alerts. As an option you can create a `GIDAAlertView` displaying a spinner and a message, the thread management is already done for you. When changing the interface orientation, the class already listens to the `NSNotificationCenter` for the `UIDeviceOrientationDidChangeNotification` notification from the device.
+GIDAAlertView is a subclass of UIAlertView; presenting alerts with a flat background, and different styles. Some alerts do not contain accept or cancel buttons, and just display and image or an activity indicator. There is also a progress loading alert which given a url it downloads a file and displays the download progress. As it is a UIAlertView subclass, it is automatically centered in iPhones and iPads. 
 
-Currently supports iPhone, iPod and iPad hardware starting with iOS 5.
+iOS 5 or newer is required `(Has not been tested in lower iOS)`
 
-# Screenshots
+![Testing]( https://raw.github.com/aparedes/GIDAAlertView/newalertview/Resources/Testing.png  )
+![Loading]( https://raw.github.com/aparedes/GIDAAlertView/newalertview/Resources/Loading.png  )
 
-![GIDAAlertView Custom]( http://cloud.github.com/downloads/ElDeveloper/GIDAAlertView/custom.png  )
-![GIDAAlertView Spinner]( http://cloud.github.com/downloads/ElDeveloper/GIDAAlertView/spinner.png  )
+[Video of download]( https://raw.github.com/aparedes/GIDAAlertView/newalertview/Resources/Download.mov )
+
 
 # Usage
 
-	//Just initalize the object
-	GIDAAlertView *alertView;
-	alertView=[[GIDAAlertView alloc] initAlertWithSpinnerAndMessage:@"GIDAAlertView Spinner"];
-	alertView presetnAlertWithSpinner];
+Checkout the demo or create the documentation.
 
-	//Later in your code
-	[alertView hideAlertWithSpinner];
+# Documentation
 
-# Contact
+Download and install [appledoc]( http://gentlebytes.com/appledoc/ ). 
 
-If you have a question, suggestion or you just want to let me know about your project, reach me on my twitter: http://www.twitter.com/yosmark
+When installed, run:
+`./createDoc.sh <Option> [Apple|HTML]`
+
+&lt;Option\>:
++ -d Documented methods/properties only
++ -u Undocumented methods/properties (Default)
+
+[Apple|HTML]
++ Apple will install the documentation to Xcode help.
++ HTML will create a html folder, open index.html to view documentation
 
 # License
 
-Copyright (c) 2012 Yoshiki Vázquez Baeza, http://yoshikee.tumblr.com/
+Copyright (c) 2013 [GIDAIbero]( https://github.com/GIDAIbero/ ) 
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

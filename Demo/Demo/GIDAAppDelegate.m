@@ -3,7 +3,7 @@
 //  Demo
 //
 //  Created by Yoshiki - Vázquez Baeza on 13/02/12.
-//  Copyright (c) 2012 Polar Bears Nanotechnology Research ©. All rights reserved.
+//  Copyright (c) 2013 GIDAIbero ©. All rights reserved.
 //
 
 #import "GIDAAppDelegate.h"
@@ -12,15 +12,10 @@
 
 @synthesize window = _window;
 
-- (void)dealloc
-{
-    [_window release];
-    [super dealloc];
-}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
     
@@ -28,7 +23,6 @@
     
     TestViewController *viewController=[[TestViewController alloc] initWithNibName:@"Test" bundle:nil];
     [[self window] setRootViewController:viewController];
-    [viewController release];
     
     return YES;
 }
