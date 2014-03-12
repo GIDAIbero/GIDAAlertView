@@ -117,4 +117,5 @@ typedef enum {
 
 - (NSDictionary *)getDownloadedData;
 - (void)setProgressBarColor:(UIColor *)color;
+- (void)setKeyboard:(UIKeyboardType)keyboard;
 @end
