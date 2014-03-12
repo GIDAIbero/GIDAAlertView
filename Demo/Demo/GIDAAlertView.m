@@ -723,4 +723,13 @@
 -(void)setProgressBarColor:(UIColor *)color {
     [_progressBar setProgressColor:color];
 }
+
+-(void)setKeyboard:(UIKeyboardType)keyboard {
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
+        [[self textFieldAtIndex:0] setKeyboardType:keyboard];
+    } else {
+        [_textField setKeyboardType:keyboard];
+    }
+}
+
 @end
