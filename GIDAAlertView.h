@@ -5,7 +5,7 @@
 //
 //  Created by Alejandro Paredes on 10/28/11.
 //
-// Following methods are inspired in Yoshiki Vázquez Baeza work on previous versions
+// Following methods are inspired in Yoshiki VÃ¡zquez Baeza work on previous versions
 // of GIDAAlertView.
 // - (id)initWithMessage:(NSString *)someMessage andAlertImage:(UIImage *)someImage;
 // - (id) initWithSpinnerAndMessage:(NSString *)message;
@@ -34,8 +34,8 @@ typedef enum {
 @protocol GIDAAlertViewDelegate <NSObject>
 @optional
 /** Tells the delegate that an alert has been clicked.
-
-@param alertView The alert view that sends the notification */
+ 
+ @param alertView The alert view that sends the notification */
 -(void)alertOnClicked:(GIDAAlertView *)alertView;
 /** Tells the delegate that an alert has been dismised.
  
@@ -55,7 +55,6 @@ typedef enum {
 @property (nonatomic, strong) NSString *identifier;
 @property (readonly) GIDAAlertViewType type;
 @property (readonly) BOOL accepted;
-@property (nonatomic, copy) NSString *message;
 @property (nonatomic, strong) id <GIDAAlertViewDelegate> gavdelegate;
 
 /** @name Initialization */
@@ -88,16 +87,16 @@ typedef enum {
 /** Initialization of a GIDAAlertView with a message and an image.
  
  An NSString and a UIImage to be presented in the alert
-@param someMessage String with the message
-@param someImage Image to show in alert
-@return A GIDAAlertView object or `nil` if it could not be created.*/
+ @param someMessage String with the message
+ @param someImage Image to show in alert
+ @return A GIDAAlertView object or `nil` if it could not be created.*/
 - (id)initWithMessage:(NSString *)someMessage andAlertImage:(UIImage *)someImage;
 
 /** Initialization of a GIDAAlertView with a message and a graphic spinner.
  
  An NSString presented along with a UIActivityIndicatorView in the alert
-@param message String with the message to present
-@return A GIDAAlertView object or `nil` if it could not be created. */
+ @param message String with the message to present
+ @return A GIDAAlertView object or `nil` if it could not be created. */
 - (id) initWithSpinnerWith:(NSString *)message;
 - (id)initWithPrompt:(NSString *)prompt cancelButtonTitle:(NSString *)cancelTitle acceptButtonTitle:(NSString *)acceptTitle;
 
@@ -117,4 +116,6 @@ typedef enum {
 
 - (NSDictionary *)getDownloadedData;
 - (void)setProgressBarColor:(UIColor *)color;
+- (void)setKeyboard:(UIKeyboardType)keyboard;
+
 @end
